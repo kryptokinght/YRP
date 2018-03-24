@@ -10,9 +10,18 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
     if(msg == "toggle"){
         toggle();
     }
+    if(msg == "start"){
+    	console.log("Hello clicked yours");
+    	creatediv();
+    	start();
+    }
 });
 
-var iframe,iframe1;
+function start(){
+    alert("started");
+}
+
+var iframe,div;
 
 function createside(){
 	iframe = document.createElement('iframe');
@@ -32,11 +41,12 @@ function createside(){
 	document.body.appendChild(iframe);	
 }
 
-function createframe(){
-	iframe = document.createElement('iframe'); 
-	iframe.style.background = "green";
+function creatediv(){
+	iframe = document.createElement('iframe');
+	iframe.id = "yrp111";
+	iframe.style.background = "red";
 	iframe.style.height = "100%";
-	iframe.style.width = "0px";
+	iframe.style.width = "300px";
 	iframe.style.position = "fixed";
 	iframe.style.top = "0px";
 	iframe.style.right = "0px";
@@ -56,7 +66,7 @@ createside();
 
 function toggle(){
     if(iframe.style.width == "0px"){
-        iframe.style.width="400px";
+        iframe.style.width="300px";
     }
     else{
         iframe.style.width="0px";
