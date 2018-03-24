@@ -15,7 +15,8 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
 var iframe,iframe1;
 
 function createside(){
-	iframe = document.createElement('iframe'); 
+	iframe = document.createElement('iframe');
+	iframe.id = "yrp111";
 	iframe.style.background = "green";
 	iframe.style.height = "100%";
 	iframe.style.width = "0px";
@@ -43,12 +44,15 @@ function createframe(){
 	iframe.frameBorder = "none";
 	iframe.style.transition = "0.5s";
 	iframe.style.opacity = "0.8";
-	iframe.src = chrome.extension.getURL("popup.html")
+	iframe.src = chrome.extension.getURL("popup.html");
 
 	document.body.appendChild(iframe);	
 }
 
 createside();
+/*$('#yrp111').contents().find('button').click(function(){
+	alert("click");
+});*/
 
 function toggle(){
     if(iframe.style.width == "0px"){
