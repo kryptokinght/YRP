@@ -5,7 +5,7 @@
 function popup() {
 	console.log("Clicked your button");
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs){
-    chrome.tabs.sendMessage(tabs[0].id, "start");
+    	chrome.tabs.sendMessage(tabs[0].id, "start");
    });
 }
 
