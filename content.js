@@ -11,7 +11,7 @@ The content.js performs 3 basic functions:
 2.Function when the current Tab is updated
 3.Function if tab is refreshed
 
-1. This includes listening for 3 tasks: loadPlayer(), stopPlayer(), togglePlayer()
+1. This includes listening for 3 tasks: loadPlayer(), closePlayer(), togglePlayer()
 2. The current tab can be updated(song changed) without the content script changing.
    The tab update feature is implemented in background. In content we add a listener
    which listens for playerTabUpdated message from background. It performs the task
@@ -21,7 +21,7 @@ The content.js performs 3 basic functions:
    of the content.js we send a message to background asking for the player_state_active
    info. If true, loadPlayer(). We don't care about the false condition.
 SO 1 and 2 are listeners while 3 is a check condition.
-We need to implement 4 functions loadPlayer(), stopPlayer(), togglePlayer(), 
+We need to implement 4 functions loadPlayer(), closePlayer(), togglePlayer(), 
 refreshPlayer().
 And we need to implement 4 listeners for 1. and 2. and a check condition for 3. which
 also contains a listener.	
@@ -178,7 +178,7 @@ function loadPlayer() {
 	console.log("loadPlayer called!");
 }
 function closePlayer() {
-	console.log("stopPlayer called!");
+	console.log("closePlayer called!");
 }
 function togglePlayer() {
 	console.log("togglePlayer called!");

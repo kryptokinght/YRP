@@ -5,7 +5,12 @@ Everything starts with the click on BrowserAction.
 
 
 var player_state_active = false;
-var player_tab_id;
+var player_tab_id, player_active_url;
+var player = {
+	active: false,
+	tab_id: 0,
+	player_active_url: ""
+};
 
 
 
@@ -22,6 +27,7 @@ chrome.browserAction.onClicked.addListener(function(){
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			player_state_active = true;
 			player_tab_id = tabs[0].id;
+			player_active_url = tabs[0].url;
 			chrome.tabs.sendMessage(player_tab_id, {task:"loadPlayer"});
 		});
 	}
@@ -47,12 +53,13 @@ chrome.browserAction.onClicked.addListener(function(){
 				chrome.tabs.sendMessage(player_tab_id, {task:"closePlayer"});
 				//2.
 				player_tab_id = tabs[0].id;
-				console.log("Loaded player in new tab")
+				player_active_url = tabs[0].url;
+				console.log("Loaded player in new tab");
 				chrome.tabs.sendMessage(player_tab_id, {task:"loadPlayer"});
 			}
 		});
 	}
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+    /*chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
     	var msg = {
     		task:"toggle",
     		playerState: player_state_active
@@ -60,7 +67,7 @@ chrome.browserAction.onClicked.addListener(function(){
     	player_tab_id = tabs[0].id;
     	player_state_active = true;
         chrome.tabs.sendMessage(tabs[0].id, msg);	
-	});
+	});*/
 });
 
 
@@ -94,7 +101,7 @@ chrome.tabs.onUpdated.addListener( //whenever any of the tab is updated
   	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   		//console.log("tabs[0] " + tabs[0].id);
   		//console.log("tab" + player_tab_id);
-  		if(tabs[0].id == player_tab_id) { //if the updated tabID matches the player_tab_id
+  		if(tabs[0].id == player_tab_id && tabs[0].url != player_active_url) { //if the updated tabID matches the player_tab_id
   			console.log("Active player Tab updated");
   			chrome.tabs.sendMessage(player_tab_id, {task:"playerTabUpdated"});
   		}
