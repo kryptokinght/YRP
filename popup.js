@@ -1,4 +1,5 @@
-//
+// Send message to content scripts to open the modal
+// on clicking the button
 function popup2() {
 	console.log("Clicked your button");
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs){ 
@@ -6,10 +7,12 @@ function popup2() {
    });
 }
 
+// added a listener to the button to send a message to content scripts
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("myBtn2").addEventListener("click", popup2);
 });
 
+//local storage
 chrome.storage.local.get("count", function(data) {
     var url = data.count;
 	console.log(url);
