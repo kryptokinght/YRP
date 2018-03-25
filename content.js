@@ -53,6 +53,36 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	else if(message.task == "closePlayer") {
 		closePlayer();
 	}
+	else if(message.task == "setTimeForm"){
+    	console.log("clicked goyrp");
+    	div1 = createModal();
+    	document.body.appendChild(div1);
+
+    	document.getElementById('closeModal').addEventListener('click', function(){
+    		div1.parentNode.removeChild(div1);
+    	});
+
+    	document.getElementById('goyrp').addEventListener('click', formSubmit);
+
+    	function formSubmit(){
+    		let song = {}; //stores the current video
+			let start = document.getElementById('strt-point').value;
+			let stop = document.getElementById('end-point').value;
+    		var vid = document.getElementsByTagName('video');
+    		var vid_length = vid[0].duration;
+			var vid_title = document.querySelector('h1.title').innerText;
+    		
+			var newPlay = { 'start': start, 'end': stop}
+    		localStorage.setItem('newPlay', JSON.stringify(newPlay));
+    		var new_data = {"yrp": {
+				"history": hist,
+				"playlists": playlists,
+				"starred": starred
+			}};
+
+			div1.parentNode.removeChild(div1);
+    	}
+    }
 });
 //---------------------------------------------------------------------------
 
@@ -95,36 +125,6 @@ console.log(url); //in
     if(msg.task == "toggle"){
         toggle();
         console.log(url);
-    }
-	if(msg == "start2"){
-    	console.log("clicked goyrp");
-    	div1 = createModal();
-    	document.body.appendChild(div1);
-
-    	document.getElementById('closeModal').addEventListener('click', function(){
-    		div1.parentNode.removeChild(div1);
-    	});
-
-    	document.getElementById('goyrp').addEventListener('click', formSubmit);
-
-    	function formSubmit(){
-    		let song = {}; //stores the current video
-			let start = document.getElementById('strt-point').value;
-			let stop = document.getElementById('end-point').value;
-    		var vid = document.getElementsByTagName('video');
-    		var vid_length = vid[0].duration;
-			var vid_title = document.querySelector('h1.title').innerText;
-    		
-			var newPlay = { 'start': start, 'end': stop}
-    		localStorage.setItem('newPlay', JSON.stringify(newPlay));
-    		var new_data = {"yrp": {
-				"history": hist,
-				"playlists": playlists,
-				"starred": starred
-			}};
-
-			div1.parentNode.removeChild(div1);
-    	}
     }
 });
 */
