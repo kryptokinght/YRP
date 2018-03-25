@@ -2,12 +2,12 @@
 	alert("Hii")
 });*/
  
-function popup() {
+/*function popup() {
 	console.log("Clicked your button");
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs){ 
     	chrome.tabs.sendMessage(tabs[0].id, "start");
    });
-}
+}*/
 
 function popup2() {
 	console.log("Clicked your button");
@@ -16,9 +16,9 @@ function popup2() {
    });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+/*document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("myBtn").addEventListener("click", popup);
-});
+});*/
 
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("myBtn2").addEventListener("click", popup2);

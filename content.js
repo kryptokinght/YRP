@@ -17,15 +17,15 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
         toggle();
         console.log(url);
     }
-    if(msg == "start"){
+    /*if(msg == "start"){
     	console.log("Hello clicked yours");
     	creatediv();
     	console.log(url);
     	//start();
-    }
+    }*/
 
     if(msg == "start2"){
-    	alert("@clicked");
+    	console.log("clicked goyrp");
     	div1 = createModal();
     	document.body.appendChild(div1);
 
@@ -35,9 +35,25 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
     		let song = {}; //stores the current video
 			let start = document.getElementById('strt-point').value;
 			let stop = document.getElementById('end-point').value;
-    		div1.style.display = "none";
+    		var vid = document.getElementsByTagName('video');
     		var vid_length = vid[0].duration;
 			var vid_title = document.querySelector('h1.title').innerText;
+    		//div1.style.display = "none";
+    		//storing value in local-storage
+    		/*localStorage.setItem("start", start);
+    		localStorage.setItem("end", stop);*/
+    		
+			var newPlay = { 'start': start, 'end': stop}
+    		localStorage.setItem('newPlay', JSON.stringify(newPlay));
+    		/*var retrievedObject = localStorage.getItem('testObject');
+			console.log('retrievedObject: ', JSON.parse(retrievedObject));*/
+    		var new_data = {"yrp": {
+				"history": hist,
+				"playlists": playlists,
+				"starred": starred
+			}};
+
+			div1.parentNode.removeChild(div1);
     	}
     }
 });
@@ -51,7 +67,7 @@ function createModal(){
 	var div = document.createElement('div');
 	div.innerHTML = '<div style="font-size:20px;text-align:center;"> <label for="strt-point">Starting point</label><br> <input type="number" name="strt-point" id="strt-point" value="0"><br><br> <label for="end-point">Ending point</label><br> <input type="number" name="end-point" id="end-point" value="0"> <br><br> <button id="goyrp">Submit</button> </div>';
 	div.style.zIndex = "9000000000000000005";
-	div.style.position = "fixed";
+	div.style.position = "relative";
 
 	return div;
 }
@@ -73,7 +89,7 @@ function createside(){
 	document.body.appendChild(iframe);	
 }
 
-function creatediv(){
+/*function creatediv(){
 	iframe1 = document.createElement('iframe');
 	iframe1.style.background = "red";
 	iframe1.style.height = "200px";
@@ -95,7 +111,7 @@ function creatediv(){
 	iframe1.src = chrome.extension.getURL("pop.html");
 
 	document.body.appendChild(iframe1);	
-}
+}*/
 
 createside();
 /*$('#yrp111').contents().find('button').click(function(){
