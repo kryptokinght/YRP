@@ -1,8 +1,9 @@
-console.log("Content JS has loaded");
+console.log("YRP Content JS has loaded");
 
-/*chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-	console.log(message.data);
-});*/
+//ask background for player state
+chrome.runtime.sendMessage({task: "getPlayerState"}, function(response) {
+	console.log(response);
+});
 
 var iframe,iframe1,div1;
 var hist, playlists, starred, interval_id;
@@ -13,7 +14,7 @@ console.log(url);
 
 chrome.runtime.onMessage.addListener(function(msg, sender){
 	console.log(msg);
-    if(msg == "toggle"){
+    if(msg.task == "toggle"){
         toggle();
         console.log(url);
     }
