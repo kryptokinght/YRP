@@ -49,8 +49,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	else if(message.task == "togglePlayer") {
 		togglePlayer();
 	}
-	else if(message.task == "stopPlayer") {
-		stopPlayer();
+	else if(message.task == "closePlayer") {
+		closePlayer();
 	}
 });
 //---------------------------------------------------------------------------
@@ -60,13 +60,20 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	3.
 	Get the player_active_state info for page refresh condition
 	if True, loadPlayer().
+	checkRefreshState
+	compares the currentTabId with the player_tab_id
+	RUNS ONLY ONCE when content.js loads
 */
-chrome.runtime.sendMessage({task: "getPlayerState"}, function(response) {
+chrome.runtime.sendMessage({task: "checkRefreshState"}, function(response) {
 	console.log("Checking for refresh!!");
-	console.log(response.playerState);
-	if(response.playerState) {
+	console.log(response);	
+	if(response.refreshState) {
 		console.log("page refreshed loadPlayer() called")
 		loadPlayer();
+	}
+	else {
+		console.log("Music player already active in another tab or this tab");
+		console.log("Click on browserAction to activate here");
 	}
 });
 //---------------------------------------------------------------------------
@@ -170,7 +177,7 @@ chrome.storage.local.set({count: url}); //in
 function loadPlayer() {
 	console.log("loadPlayer called!");
 }
-function stopPlayer() {
+function closePlayer() {
 	console.log("stopPlayer called!");
 }
 function togglePlayer() {

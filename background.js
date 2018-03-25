@@ -43,9 +43,11 @@ chrome.browserAction.onClicked.addListener(function(){
 					2.load the music player in this new tab
 				*/
 				//1.
+				console.log("close player!!");
 				chrome.tabs.sendMessage(player_tab_id, {task:"closePlayer"});
 				//2.
 				player_tab_id = tabs[0].id;
+				console.log("Loaded player in new tab")
 				chrome.tabs.sendMessage(player_tab_id, {task:"loadPlayer"});
 			}
 		});
@@ -63,11 +65,24 @@ chrome.browserAction.onClicked.addListener(function(){
 
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-	if(message.task == "getPlayerState") {
-		console.log("Message received for player_state_active");
-		sendResponse({playerState: player_state_active});
+	if(message.task == "checkRefreshState") {
+		console.log("Message received to check refresh state for Tab");
+		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+			if(player_state_active) {
+				if(tabs[0].id == player_tab_id)
+					sendResponse({refreshState: true});
+				else {
+					sendResponse({refreshState: false});	
+				}
+			}
+			else {
+				sendResponse({refreshState: false});
+			}
+		});
 	}
+	return true;
 });
+//Remember to use return true https://stackoverflow.com/questions/20077487/chrome-extension-message-passing-response-not-sent
 
 
 /*
@@ -102,4 +117,5 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 			sendResponse({activeTabId: tabs[0].id});
 		});		
 	}
+	return true;
 });
