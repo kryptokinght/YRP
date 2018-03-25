@@ -17,12 +17,6 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
         toggle();
         console.log(url);
     }
-    /*if(msg == "start"){
-    	console.log("Hello clicked yours");
-    	creatediv();
-    	console.log(url);
-    	//start();
-    }*/
 
     if(msg == "start2"){
     	console.log("clicked goyrp");
@@ -42,15 +36,9 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
     		var vid = document.getElementsByTagName('video');
     		var vid_length = vid[0].duration;
 			var vid_title = document.querySelector('h1.title').innerText;
-    		//div1.style.display = "none";
-    		//storing value in local-storage
-    		/*localStorage.setItem("start", start);
-    		localStorage.setItem("end", stop);*/
     		
 			var newPlay = { 'start': start, 'end': stop}
     		localStorage.setItem('newPlay', JSON.stringify(newPlay));
-    		/*var retrievedObject = localStorage.getItem('testObject');
-			console.log('retrievedObject: ', JSON.parse(retrievedObject));*/
     		var new_data = {"yrp": {
 				"history": hist,
 				"playlists": playlists,
@@ -99,34 +87,8 @@ function createside(){
 	document.body.appendChild(iframe);	
 }
 
-/*function creatediv(){
-	iframe1 = document.createElement('iframe');
-	iframe1.style.background = "red";
-	iframe1.style.height = "200px";
-	iframe1.style.top = "50%";
-	iframe1.style.left = "50%";
-	iframe1.style.bottom = "50%";
-	iframe1.style.right = "50%";
-	iframe1.style.marginTop = "-50px";
-	iframe1.style.marginBottom = "-50px";
-	iframe1.style.marginLeft = "-50px";
-	iframe1.style.marginRight = "-50px";
-	//iframe1..style.margin = "50px 10px 20px 30px";
-	iframe1.style.width = "200px";
-	iframe1.style.display = "block";
-	iframe1.style.position = "fixed";
-	iframe.style.transition = "0.5s";
-	iframe1.style.zIndex = "9000000000000000004";
-	iframe1.frameBorder = "none";
-	iframe1.src = chrome.extension.getURL("pop.html");
-
-	document.body.appendChild(iframe1);	
-}*/
 
 createside();
-/*$('#yrp111').contents().find('button').click(function(){
-	alert("click");
-});*/
 
 function toggle(){
     if(iframe.style.width == "0px"){
@@ -137,9 +99,6 @@ function toggle(){
     }
 }
 
-/*chrome.runtime.sendMessage({data: "Fuck You"}, function(){
-	console.log("Message has been sent");
-});*/
-
-var clse = document.getElementById('clse');
-chrome.storage.local.set({count: url, clse: clse});
+var vid_title = document.querySelector('h1.title').innerText;
+chrome.storage.local.set({count: url});
+chrome.storage.local.set({title: vid_title});

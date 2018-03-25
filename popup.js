@@ -1,24 +1,10 @@
-/*document.getElementById("myBtn").addEventListener("click", function(){
-	alert("Hii")
-});*/
- 
-/*function popup() {
-	console.log("Clicked your button");
-    chrome.tabs.query({currentWindow: true, active: true}, function (tabs){ 
-    	chrome.tabs.sendMessage(tabs[0].id, "start");
-   });
-}*/
-
+//
 function popup2() {
 	console.log("Clicked your button");
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs){ 
     	chrome.tabs.sendMessage(tabs[0].id, "start2");
    });
 }
-
-/*document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("myBtn").addEventListener("click", popup);
-});*/
 
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("myBtn2").addEventListener("click", popup2);
@@ -37,5 +23,11 @@ chrome.storage.local.get("count", function(data) {
 	console.log(src1);
 	var img1 = document.getElementById("mimg");
 	img1.src = src1;
-	console.log(data.clse.id);
+});
+
+chrome.storage.local.get("title", function(data){
+	var txt = data.title;
+	console.log("The "+ txt);
+	var title1 = document.getElementById("txt");
+	title1.textContent = txt;
 });
