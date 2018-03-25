@@ -29,6 +29,10 @@ chrome.runtime.onMessage.addListener(function(msg, sender){
     	div1 = createModal();
     	document.body.appendChild(div1);
 
+    	document.getElementById('closeModal').addEventListener('click', function(){
+    		div1.parentNode.removeChild(div1);
+    	});
+
     	document.getElementById('goyrp').addEventListener('click', formSubmit);
 
     	function formSubmit(){
@@ -65,13 +69,13 @@ function start(){
 
 function createModal(){
 	var div = document.createElement('div');
-	div.innerHTML = '<div style="font-size:20px;text-align:center;"> <label for="strt-point">Starting point</label><br> <input type="number" name="strt-point" id="strt-point" value="0"><br><br> <label for="end-point">Ending point</label><br> <input type="number" name="end-point" id="end-point" value="0"> <br><br> <button id="goyrp">Submit</button> </div>';
+	div.innerHTML = '<div style="font-size:20px;text-align:center;"><a style="float:right; cursor: pointer;" id="closeModal">X</a><br /> <label for="strt-point">Starting point</label><br> <input type="number" name="strt-point" id="strt-point" value="0"><br><br> <label for="end-point">Ending point</label><br> <input type="number" name="end-point" id="end-point" value="0"> <br><br> <button id="goyrp">Submit</button> </div>';
 	div.style.zIndex = "9000000000000000005";
 	div.style.position = "relative";
 	div.style.background = "green";
 	div.style.top = "200px";
-	div.style.width = "500px";
-	div.style.height = "200px";
+	div.style.width = "400px";
+	div.style.height = "220px";
 	div.style.left = "30%";
 	div.style.opacity = "0.95";
 
