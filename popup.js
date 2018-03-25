@@ -3,7 +3,8 @@
 function popup2() {
 	console.log("Clicked your button");
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs){ 
-    	chrome.tabs.sendMessage(tabs[0].id, "start2");
+    	console.log("Reached");
+    	chrome.tabs.sendMessage(tabs[0].id, {task: "setTimeForm"});
    });
 }
 
