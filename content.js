@@ -32,6 +32,7 @@ console.log("YRP Content JS has loaded");
 
 var iframe,iframe1,div1;
 var hist, playlists, starred, interval_id;
+var toggleState = false;
 
 
 /*
@@ -162,14 +163,21 @@ function createMusicPlayer() {
 	document.body.appendChild(iframe);	
 }
 
+function removeMusicPlayer() {
+	var temp_iframe = document.getElementById('yrp111'); 
+	temp_iframe.parentNode.removeChild(temp_iframe);
+}
+
 createMusicPlayer();
 
 function toggle() {
     if(iframe.style.width == "0px"){
         iframe.style.width="300px";
+        toggleState = true;
     }
     else{
         iframe.style.width="0px";
+        toggleState = false;
     }
 }
 
@@ -182,12 +190,16 @@ chrome.storage.local.set({count: url}); //in
 
 function loadPlayer() {
 	console.log("loadPlayer called!");
+	createMusicPlayer(); //creates the template
+	toggle();
 }
 function closePlayer() {
 	console.log("closePlayer called!");
+	removeMusicPlayer();
 }
 function togglePlayer() {
 	console.log("togglePlayer called!");
+	toggle();
 }
 function refreshPlayer() {
 	console.log("refreshPlayer called!");
