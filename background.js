@@ -57,15 +57,6 @@ chrome.browserAction.onClicked.addListener(function(){
 			}
 		});
 	}
-    /*chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-    	var msg = {
-    		task:"toggle",
-    		playerState: player_state_active
-    	};
-    	player_tab_id = tabs[0].id;
-    	player_state_active = true;
-        chrome.tabs.sendMessage(tabs[0].id, msg);	
-	});*/
 });
 
 
@@ -87,7 +78,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	}
 	return true;
 });
-//Remember to use return true https://stackoverflow.com/questions/20077487/chrome-extension-message-passing-response-not-sent
+//Remember to use 'return true' https://stackoverflow.com/questions/20077487/chrome-extension-message-passing-response-not-sent
 
 
 /*
@@ -106,13 +97,6 @@ chrome.tabs.onUpdated.addListener( //whenever any of the tab is updated
   	});
   }
 );
-
-/*chrome.tabs.onActivated.addListener(function(activeInfo) {
-  // how to fetch tab url using activeInfo.tabid
-  chrome.tabs.get(activeInfo.tabId, function(tab){
-     console.log(tab.url);
-  });
-});*/
 
 // listens for getCurrentTabID task and sends the current tab ID
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
