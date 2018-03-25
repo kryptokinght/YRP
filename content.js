@@ -69,6 +69,12 @@ function createModal(){
 	div.innerHTML = '<div style="font-size:20px;text-align:center;"> <label for="strt-point">Starting point</label><br> <input type="number" name="strt-point" id="strt-point" value="0"><br><br> <label for="end-point">Ending point</label><br> <input type="number" name="end-point" id="end-point" value="0"> <br><br> <button id="goyrp">Submit</button> </div>';
 	div.style.zIndex = "9000000000000000005";
 	div.style.position = "relative";
+	div.style.background = "green";
+	div.style.top = "200px";
+	div.style.width = "500px";
+	div.style.height = "200px";
+	div.style.left = "30%";
+	div.style.opacity = "0.95";
 
 	return div;
 }
