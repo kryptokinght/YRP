@@ -1,3 +1,9 @@
 .container{
 	background-color: 
 }
+
+#txt{
+	text-align: center;
+	float: right;
+	color: darkolivegreen;
+}

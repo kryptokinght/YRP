@@ -12,8 +12,6 @@ var player = {
 	player_active_url: ""
 };
 
-
-
 //********************************************************************************
 // EVERYTHING starts with the user clicking on the BrowserAction button
 chrome.browserAction.onClicked.addListener(function(){

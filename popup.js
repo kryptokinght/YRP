@@ -1,4 +1,5 @@
-
+// Send message to content scripts to open the modal
+// on clicking the button
 function popup2() {
 	console.log("Clicked your button");
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs){ 
@@ -6,11 +7,12 @@ function popup2() {
    });
 }
 
-
+// added a listener to the button to send a message to content scripts
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("myBtn2").addEventListener("click", popup2);
 });
 
+//local storage
 chrome.storage.local.get("count", function(data) {
     var url = data.count;
 	console.log(url);
@@ -24,5 +26,11 @@ chrome.storage.local.get("count", function(data) {
 	console.log(src1);
 	var img1 = document.getElementById("mimg");
 	img1.src = src1;
-	console.log(data.clse.id);
+});
+
+chrome.storage.local.get("title", function(data){
+	var txt = data.title;
+	console.log("The "+ txt);
+	var title1 = document.getElementById("txt");
+	title1.textContent = txt;
 });
