@@ -121,7 +121,7 @@ function createMusicPlayer() {
 	iframe.frameBorder = "none";
 	iframe.style.transition = "0.5s";
 	iframe.style.opacity = "0.95";
-	iframe.src = chrome.extension.getURL("popup.html");
+	iframe.src = chrome.extension.getURL("musicPlayer.html");
 
 	document.body.appendChild(iframe);	
 }
@@ -137,7 +137,7 @@ function createTimeModal(){
 	temp_iframe.frameBorder = "none";
 	temp_iframe.style.transition = "0.5s";
 	temp_iframe.style.opacity = "0.95";
-	temp_iframe.src = chrome.extension.getURL("pop.html");
+	temp_iframe.src = chrome.extension.getURL("setTimeForm.html");
 
 	return temp_iframe;
 }
