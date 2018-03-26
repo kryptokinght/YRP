@@ -54,34 +54,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 		closePlayer();
 	}
 	else if(message.task == "setTimeForm"){
-    	console.log("clicked goyrp");
-    	div1 = createModal();
-    	document.body.appendChild(div1);
-
-    	document.getElementById('closeModal').addEventListener('click', function(){
-    		div1.parentNode.removeChild(div1);
-    	});
-
-    	document.getElementById('goyrp').addEventListener('click', formSubmit);
-
-    	function formSubmit(){
-    		let song = {}; //stores the current video
-			let start = document.getElementById('strt-point').value;
-			let stop = document.getElementById('end-point').value;
-    		var vid = document.getElementsByTagName('video');
-    		var vid_length = vid[0].duration;
-			var vid_title = document.querySelector('h1.title').innerText;
-    		
-			var newPlay = { 'start': start, 'end': stop}
-    		localStorage.setItem('newPlay', JSON.stringify(newPlay));
-    		var new_data = {"yrp": {
-				"history": hist,
-				"playlists": playlists,
-				"starred": starred
-			}};
-
-			div1.parentNode.removeChild(div1);
-    	}
+		createTimeForm(); //form for start and end time
     }
 });
 //---------------------------------------------------------------------------
@@ -163,6 +136,25 @@ function createMusicPlayer() {
 	document.body.appendChild(iframe);	
 }
 
+function formSubmit(){
+	let song = {}; //stores the current video
+	let start = document.getElementById('strt-point').value;
+	let stop = document.getElementById('end-point').value;
+	var vid = document.getElementsByTagName('video');
+	var vid_length = vid[0].duration;
+	var vid_title = document.querySelector('h1.title').innerText;
+	
+	var newPlay = { 'start': start, 'end': stop}
+	localStorage.setItem('newPlay', JSON.stringify(newPlay));
+	var new_data = {"yrp": {
+		"history": hist,
+		"playlists": playlists,
+		"starred": starred
+	}};
+
+	div1.parentNode.removeChild(div1);
+}
+
 function removeMusicPlayer() {
 	var temp_iframe = document.getElementById('yrp111'); 
 	temp_iframe.parentNode.removeChild(temp_iframe);
@@ -193,14 +185,32 @@ function loadPlayer() {
 	createMusicPlayer(); //creates the template
 	toggle();
 }
-function closePlayer() {
+function closePlayer() { //complete
 	console.log("closePlayer called!");
 	removeMusicPlayer();
 }
-function togglePlayer() {
+function togglePlayer() { //complete
 	console.log("togglePlayer called!");
 	toggle();
 }
 function refreshPlayer() {
 	console.log("refreshPlayer called!");
+}
+function createTimeForm() {
+	console.log("clicked goyrp");
+	div1 = createModal();
+	document.body.appendChild(div1);
+
+	document.getElementById('closeModal').addEventListener('click', function(){
+		div1.parentNode.removeChild(div1);
+	});
+
+	document.getElementById('goyrp').addEventListener('click', formSubmit);
+}
+function initializeMusicPlayer() {
+	/*
+	Initializes the music player with the song in the webpage
+	Does not play the sond, in a paused state
+	*/
+
 }

@@ -108,3 +108,13 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	}
 	return true;
 });
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	if(message.task == "getCurrentTabUrl") {
+		console.log("Message <content.js> getCurrentTabUrl");
+		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+			sendResponse({activeTabId: tabs[0].url});
+		});		
+	}
+	return true;
+});
