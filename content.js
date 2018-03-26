@@ -144,7 +144,6 @@ function createModal(){
 	iframe1.style.left = "400px";
 	iframe1.style.zIndex = "9000000000000000004";
 	iframe1.frameBorder = "none";
-	iframe1.style.transition = "0.5s";
 	iframe1.style.opacity = "0.95";
 	iframe1.src = chrome.extension.getURL("pop.html");
 
