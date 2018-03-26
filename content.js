@@ -30,7 +30,7 @@ also contains a listener.
 console.log("YRP Content JS has loaded");
 
 
-var iframe,iframe1,div1;
+var iframe,iframe1,div1,oframe;
 var hist, playlists, starred, interval_id;
 var toggleState = false;
 
@@ -54,7 +54,22 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 		closePlayer();
 	}
 	else if(message.task == "setTimeForm"){
-		createTimeForm(); //form for start and end time
+    	
+    	oframe = createModal();
+    	document.body.appendChild(oframe);
+    	
+    }
+    else if(message.task == 'submitModal'){
+    	
+    	console.log("Subitted Modal");
+    	//Local Storage functions
+    	
+    	oframe.parentNode.removeChild(oframe);
+
+    }
+    else if(message.task == 'closeModal'){
+    	console.log("Closing the Modal");
+    	oframe.parentNode.removeChild(oframe);
     }
 });
 //---------------------------------------------------------------------------
@@ -102,22 +117,6 @@ console.log(url); //in
 });
 */
 
-
-function createModal(){
-	var div = document.createElement('div');
-	div.innerHTML = '<div style="font-size:20px;text-align:center;"><a style="float:right; cursor: pointer;" id="closeModal">X</a><br /> <label for="strt-point">Starting point</label><br> <input type="number" name="strt-point" id="strt-point" value="0"><br><br> <label for="end-point">Ending point</label><br> <input type="number" name="end-point" id="end-point" value="0"> <br><br> <button id="goyrp">Submit</button> </div>';
-	div.style.zIndex = "9000000000000000005";
-	div.style.position = "relative";
-	div.style.background = "green";
-	div.style.top = "200px";
-	div.style.width = "400px";
-	div.style.height = "220px";
-	div.style.left = "30%";
-	div.style.opacity = "0.95";
-
-	return div;
-}
-
 //shows the music player in the right side of window
 function createMusicPlayer() {
 	iframe = document.createElement('iframe');
@@ -136,23 +135,20 @@ function createMusicPlayer() {
 	document.body.appendChild(iframe);	
 }
 
-function formSubmit(){
-	let song = {}; //stores the current video
-	let start = document.getElementById('strt-point').value;
-	let stop = document.getElementById('end-point').value;
-	var vid = document.getElementsByTagName('video');
-	var vid_length = vid[0].duration;
-	var vid_title = document.querySelector('h1.title').innerText;
-	
-	var newPlay = { 'start': start, 'end': stop}
-	localStorage.setItem('newPlay', JSON.stringify(newPlay));
-	var new_data = {"yrp": {
-		"history": hist,
-		"playlists": playlists,
-		"starred": starred
-	}};
+function createModal(){
+	iframe1 = document.createElement('iframe');
+	iframe1.style.height = "250px";
+	iframe1.style.width = "400px";
+	iframe1.style.position = "fixed";
+	iframe1.style.top = "200px";
+	iframe1.style.left = "400px";
+	iframe1.style.zIndex = "9000000000000000004";
+	iframe1.frameBorder = "none";
+	iframe1.style.transition = "0.5s";
+	iframe1.style.opacity = "0.95";
+	iframe1.src = chrome.extension.getURL("pop.html");
 
-	div1.parentNode.removeChild(div1);
+	return iframe1;
 }
 
 function removeMusicPlayer() {

@@ -44,7 +44,7 @@ video_detail.title = document.querySelector('h1.title').innerText;*/
 
 // Send message to content scripts to open the modal
 // on clicking the button
-function popup2() {
+function popupModal() {
 	console.log("Clicked your button");
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs){ 
     	console.log("Reached");
@@ -54,7 +54,7 @@ function popup2() {
 
 // added a listener to the button to send a message to content scripts
 document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("myBtn2").addEventListener("click", popup2);
+  document.getElementById("openModal").addEventListener("click", popupModal);
 });
 
 //local storage
