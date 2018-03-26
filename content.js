@@ -30,8 +30,7 @@ also contains a listener.
 console.log("YRP Content JS has loaded");
 
 
-var iframe,iframe1,div1,oframe;
-var hist, playlists, starred, interval_id;
+var iframe, setTimeModal; //iframe stores the main music player
 var toggleState = false;
 
 
@@ -41,7 +40,7 @@ var toggleState = false;
 */
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "playerTabUpdated") {
-		console.log("player tab update refreshplayer() called")
+		console.log("player tab update refreshplayer() called");
 		refreshPlayer();
 	}
 	else if(message.task == "loadPlayer") {
@@ -53,24 +52,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	else if(message.task == "closePlayer") {
 		closePlayer();
 	}
-	else if(message.task == "setTimeForm"){
-    	
-    	oframe = createModal();
-    	document.body.appendChild(oframe);
-    	
-    }
-    else if(message.task == 'submitModal'){
-    	
-    	console.log("Subitted Modal");
-    	//Local Storage functions
-    	
-    	oframe.parentNode.removeChild(oframe);
-
-    }
-    else if(message.task == 'closeModal'){
-    	console.log("Closing the Modal");
-    	oframe.parentNode.removeChild(oframe);
-    }
 });
 //---------------------------------------------------------------------------
 
@@ -97,6 +78,28 @@ chrome.runtime.sendMessage({task: "checkRefreshState"}, function(response) {
 });
 //---------------------------------------------------------------------------
 
+//************Listeners for controlling the setTime modal********************
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	if(message.task == "setTimeModal"){
+    	
+    	setTimeModal = createTimeModal();
+    	document.body.appendChild(setTimeModal);
+    	
+    }
+    else if(message.task == 'submitTimeModal'){
+    	
+    	console.log("Submitted Modal");
+    	//Local Storage functions
+
+    	setTimeModal.parentNode.removeChild(setTimeModal);
+
+    }
+    else if(message.task == 'closeTimeModal'){
+    	console.log("Closing the time modal");
+    	setTimeModal.parentNode.removeChild(setTimeModal);
+    }
+});
+
 
 
 //****************Unknown variable declaration*********************
@@ -105,19 +108,7 @@ var url = vid[0].baseURI; //in
 console.log(url); //in
 
 
-
-//listens for message from background if browserAction clicked
-/*chrome.runtime.onMessage.addListener(function(msg, sender){ //in
-	console.log("Message browser action:");
-	console.log(msg);
-    if(msg.task == "toggle"){
-        toggle();
-        console.log(url);
-    }
-});
-*/
-
-//shows the music player in the right side of window
+//creates the music player in the right side of window
 function createMusicPlayer() {
 	iframe = document.createElement('iframe');
 	iframe.id = "yrp111";
@@ -135,20 +126,20 @@ function createMusicPlayer() {
 	document.body.appendChild(iframe);	
 }
 
-function createModal(){
-	iframe1 = document.createElement('iframe');
-	iframe1.style.height = "250px";
-	iframe1.style.width = "400px";
-	iframe1.style.position = "fixed";
-	iframe1.style.top = "200px";
-	iframe1.style.left = "400px";
-	iframe1.style.zIndex = "9000000000000000004";
-	iframe1.frameBorder = "none";
-	iframe1.style.transition = "0.5s";
-	iframe1.style.opacity = "0.95";
-	iframe1.src = chrome.extension.getURL("pop.html");
+function createTimeModal(){
+	let temp_iframe = document.createElement('iframe');
+	temp_iframe.style.height = "250px";
+	temp_iframe.style.width = "400px";
+	temp_iframe.style.position = "fixed";
+	temp_iframe.style.top = "200px";
+	temp_iframe.style.left = "400px";
+	temp_iframe.style.zIndex = "9000000000000000004";
+	temp_iframe.frameBorder = "none";
+	temp_iframe.style.transition = "0.5s";
+	temp_iframe.style.opacity = "0.95";
+	temp_iframe.src = chrome.extension.getURL("pop.html");
 
-	return iframe1;
+	return temp_iframe;
 }
 
 function removeMusicPlayer() {
@@ -156,9 +147,28 @@ function removeMusicPlayer() {
 	temp_iframe.parentNode.removeChild(temp_iframe);
 }
 
-createMusicPlayer();
+function loadPlayer() {
+	console.log("loadPlayer called!");
+	createMusicPlayer(); //creates the template
+	toggle();
+}
+
+function closePlayer() { //complete
+	console.log("closePlayer called!");
+	removeMusicPlayer();
+}
+
+function togglePlayer() { //complete
+	console.log("togglePlayer called!");
+	toggle();
+}
+
+function refreshPlayer() {
+	console.log("refreshPlayer called!");
+}
 
 function toggle() {
+	//toggles the music player iframe, opens and closes it.
     if(iframe.style.width == "0px"){
         iframe.style.width="300px";
         toggleState = true;
@@ -169,44 +179,10 @@ function toggle() {
     }
 }
 
-
-/*var vid_title = document.querySelector('h1.title').innerText;
-chrome.storage.local.set({count: url});
-chrome.storage.local.set({title: vid_title});*/
-//stores the current URL in localStorage to show in recently playing
-chrome.storage.local.set({count: url}); //in
-
-function loadPlayer() {
-	console.log("loadPlayer called!");
-	createMusicPlayer(); //creates the template
-	toggle();
-}
-function closePlayer() { //complete
-	console.log("closePlayer called!");
-	removeMusicPlayer();
-}
-function togglePlayer() { //complete
-	console.log("togglePlayer called!");
-	toggle();
-}
-function refreshPlayer() {
-	console.log("refreshPlayer called!");
-}
-function createTimeForm() {
-	console.log("clicked goyrp");
-	div1 = createModal();
-	document.body.appendChild(div1);
-
-	document.getElementById('closeModal').addEventListener('click', function(){
-		div1.parentNode.removeChild(div1);
-	});
-
-	document.getElementById('goyrp').addEventListener('click', formSubmit);
-}
 function initializeMusicPlayer() {
 	/*
 	Initializes the music player with the song in the webpage
-	Does not play the sond, in a paused state
+	Does not play the song, in a paused state
 	*/
 
 }
