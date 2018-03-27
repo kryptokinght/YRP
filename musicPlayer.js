@@ -67,6 +67,15 @@ function popupModal() {
 	});
 }
 
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
+	console.log("Go lucky");
+	if(message.task == 'submittedForm'){
+		console.log("Submitted Form Go lucky");
+		console.log(message.video_url);
+		console.log(message.video_detail.starred);
+	}
+})
+
 /*
 
 var url = data.count;

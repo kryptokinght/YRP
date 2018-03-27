@@ -2,7 +2,7 @@
 function modalSubmit() {
 	console.log("Clicked button to open modal");
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs){ 
-    	console.log("Opening Modal");
+    	//console.log("Opening Modal");
     	chrome.tabs.sendMessage(tabs[0].id, {task: "submitTimeModal"});
    });
 }
@@ -11,7 +11,7 @@ function modalSubmit() {
 function modalClose() {
 	console.log("Clicked button to close modal");
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs){ 
-    	console.log("Closing Modal");
+    	//console.log("Closing Modal");
     	chrome.tabs.sendMessage(tabs[0].id, {task: "closeTimeModal"});
    });
 }
