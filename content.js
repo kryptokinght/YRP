@@ -107,6 +107,10 @@ function removeMusicPlayer() {
 function loadPlayer() {
 	console.log("loadPlayer called!");
 	createMusicPlayer(); //creates the template
+	/*
+	check wether video in local storage or not and initialize the player
+	*/
+	initializeMusicPlayer();
 	toggle();
 }
 
@@ -138,8 +142,8 @@ function toggle() {
 
 function initializeMusicPlayer() {
 	/*
-	Initializes the music player with the song in the webpage
-	Does not play the song, in a paused state
+	Initializes the music player with the song in the webpage. If found in
+	localstorage loads the saved state of song in player 2.
 	*/
 	var vid = document.getElementsByTagName('video'); //in
 	var url = vid[0].baseURI; //in

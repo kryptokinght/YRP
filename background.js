@@ -3,11 +3,36 @@ console.log("Background JS has loaded");
 Everything starts with the click on BrowserAction.
 */
 
+/*
+LocalStorage format for storing MusicPlayer info
+{
+	yrp: {
+		history : [{song1},{song2},{song3}],
+		starred : ["songurl1","songurl2","songurl3"],
+		playlist : [
+			{"playlist1": ["songurl1","songurl2","songurl3"]},
+			{"playlist2": ["songurl1","songurl2","songurl3"]},
+			{"playlist3": ["songurl1","songurl2","songurl3"]}
+		]
+	}
+}
+*/
+
 var player = {
 	active: false,
 	tab_id: 0,
 	active_url: ""
 };
+var video_detail = {
+	url: "",
+	repeats: 0,
+	title: "",
+	playlist: "",
+	starred: false,
+	startTime: 0,
+	endTime: 0
+};
+var history, starred, playlist;
 
 //********************************************************************************
 // EVERYTHING starts with the user clicking on the BrowserAction button
