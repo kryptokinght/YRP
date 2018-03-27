@@ -16,7 +16,7 @@ Identify the video in the webpage, get title, thumbnail,
 */
 
 
-console.log("YRP Popup.js has loaded!!");
+console.log("YRP has loaded!!");
 var video_detail = {
 	url: "",
 	repeats: 0,
@@ -70,11 +70,12 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 	console.log("Go lucky");
 	if(message.task == 'submittedForm'){
 		console.log("Submitted Form Go lucky");
-		console.log(message.video_url);
 		console.log(message.video_detail.starred);
 		console.log(message.video_detail.url);
 		console.log(message.video_detail.title);
 		console.log(message.video_detail.playIcon);
+		console.log(message.video_detail.startTime);
+		console.log(message.video_detail.endTime);
 	}
 })
 

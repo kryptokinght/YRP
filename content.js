@@ -101,7 +101,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 		    console.log("The youtube url is not valid.");
 		}
     	var srcImage ="https://i1.ytimg.com/vi/"+videoid[1]+"/default.jpg";
-    	console.log(srcImage);
 		var video_detail = {
 			url: vid[0].baseURI,
 			repeats: 0,
@@ -109,8 +108,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 			playlist: "",
 			playIcon: srcImage,
 			starred: false,
-			startTime: 0,
-			endTime: 0
+			startTime: message.timeData.startTime,
+			endTime: message.timeData.endTime
 		};
     	chrome.runtime.sendMessage({task: "submittedForm", video_detail},function(response){
 
