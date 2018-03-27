@@ -16,6 +16,7 @@ Identify the video in the webpage, get title, thumbnail,
 */
 
 
+
 console.log("musicPlayer.js has loaded!!");
 
 var video_detail = {
@@ -68,11 +69,12 @@ function popupModal() {
 }
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-	console.log("Go lucky");
 	if(message.task == 'submittedForm'){
-		console.log("Submitted Form Go lucky");
-		console.log(message.video_url);
+		console.log("Video data received from <content.js>");
 		console.log(message.video_detail.starred);
+		console.log(message.video_detail.url);
+		console.log(message.video_detail.title);
+		console.log(message.video_detail.playIcon);
 	}
 })
 
@@ -80,13 +82,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 
 var url = data.count;
 console.log(url);
-var videoid = data.count.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
-if(videoid != null) {
-	console.log("video id = ",videoid[1]);
-} else { 
-    console.log("The youtube url is not valid.");
-}
-var src1 ="https://i1.ytimg.com/vi/"+videoid[1]+"/default.jpg";
+
 console.log(src1);
 var img1 = document.getElementById("mimg");
 img1.src = src1;

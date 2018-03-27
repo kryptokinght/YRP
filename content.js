@@ -32,6 +32,7 @@ console.log("YRP Content JS has loaded");
 
 var iframe, setTimeModal; //iframe stores the main music player
 var toggleState = false;
+
 var video_detail = {
 	url: "",
 	repeats: 0,
@@ -41,6 +42,7 @@ var video_detail = {
 	startTime: 0,
 	endTime: 0
 };
+
 
 /*
 	1. and 2.
@@ -93,7 +95,23 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     }
     else if(message.task == 'submitTimeModal'){ //when submit button is clicked
     	console.log("Submitted Modal and send video data to musicPlayer.js");
-    	
+
+    	//Get data of current playing video
+    	var title = document.querySelector('title').innerText;
+		var vid = document.getElementsByTagName('video');
+		var videoid = vid[0].baseURI.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
+    	var srcImage ="https://i1.ytimg.com/vi/"+videoid[1]+"/default.jpg";
+
+		let video_detail = {
+			url: vid[0].baseURI,
+			repeats: 0,
+			title: title,
+			playlist: "",
+			playIcon: srcImage,
+			starred: false,
+			startTime: 0,
+			endTime: 0
+		};
     	chrome.runtime.sendMessage({task: "submittedForm", video_detail},function(response){
     		console.log("Video information sent to musicPlayer.js")
     	});
