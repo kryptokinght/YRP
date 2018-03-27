@@ -49,7 +49,7 @@ message = {
 	state: 1 or 2
 }
 */
-chrome.runtime.onMessage.addEventListener(function())
+//chrome.runtime.onMessage.addEventListener(function())----------
 
 
 // sets listener to openModal button for click action

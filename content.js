@@ -41,11 +41,6 @@ var video_detail = {
 	startTime: 0,
 	endTime: 0
 };
-//****************Unknown variable declaration*********************
-/*var vid = document.getElementsByTagName('video'); //in
-var url = vid[0].baseURI; //in
-console.log(url); //in*/
-
 
 /*
 	1. and 2.
@@ -97,11 +92,10 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     	createTimeModal();
     }
     else if(message.task == 'submitTimeModal'){ //when submit button is clicked
+    	console.log("Submitted Modal and send video data to musicPlayer.js");
     	
-    	console.log("Submitted Modal");
-    	//Local Storage functions
     	chrome.runtime.sendMessage({task: "submittedForm", video_detail},function(response){
-
+    		console.log("Video information sent to musicPlayer.js")
     	});
 
     	setTimeModal.parentNode.removeChild(setTimeModal);
