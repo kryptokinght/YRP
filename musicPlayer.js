@@ -77,14 +77,4 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 		console.log(message.video_detail.startTime);
 		console.log(message.video_detail.endTime);
 	}
-})
-
-/*
-
-var url = data.count;
-console.log(url);
-
-console.log(src1);
-var img1 = document.getElementById("mimg");
-img1.src = src1;
-*/
+});

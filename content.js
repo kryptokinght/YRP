@@ -95,11 +95,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     	var title = document.querySelector('title').innerText;
 		var vid = document.getElementsByTagName('video');
 		var videoid = vid[0].baseURI.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
-		if(videoid != null) {
-			console.log("video id = ",videoid[1]);
-		} else { 
-		    console.log("The youtube url is not valid.");
-		}
     	var srcImage ="https://i1.ytimg.com/vi/"+videoid[1]+"/default.jpg";
 		var video_detail = {
 			url: vid[0].baseURI,
