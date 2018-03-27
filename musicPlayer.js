@@ -15,8 +15,6 @@ Get URL of webpage from
 Identify the video in the webpage, get title, thumbnail, 
 */
 
-
-
 console.log("musicPlayer.js has loaded!!");
 
 var video_detail = {
@@ -71,10 +69,13 @@ function popupModal() {
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 	if(message.task == 'submittedForm'){
 		console.log("Video data received from <content.js>");
+
 		console.log(message.video_detail.starred);
 		console.log(message.video_detail.url);
 		console.log(message.video_detail.title);
 		console.log(message.video_detail.playIcon);
+		console.log(message.video_detail.startTime);
+		console.log(message.video_detail.endTime);
 	}
 })
 

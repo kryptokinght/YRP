@@ -109,8 +109,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 			playlist: "",
 			playIcon: srcImage,
 			starred: false,
-			startTime: 0,
-			endTime: 0
+			startTime: message.timeData.startTime,
+			endTime: message.timeData.endTime
 		};
     	chrome.runtime.sendMessage({task: "submittedForm", video_detail},function(response){
     		console.log("Video information sent to musicPlayer.js")

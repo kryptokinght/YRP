@@ -12,8 +12,15 @@ function submitModal() {
 /*function to submit the modal with values*/
   console.log("Clicked button to open modal");
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs){ 
-      //console.log("Opening Modal");
-      chrome.tabs.sendMessage(tabs[0].id, {task: "submitTimeModal"});
+
+    	//console.log("Opening Modal");
+      var start = document.getElementById('start-time').value;
+      var end = document.getElementById('end-time').value;
+      var timeData = {
+        startTime: start,
+        endTime: end
+      }
+    	chrome.tabs.sendMessage(tabs[0].id, {task: "submitTimeModal", timeData});
    });
 }
 
