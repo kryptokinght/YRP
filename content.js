@@ -93,13 +93,10 @@ chrome.runtime.sendMessage({task: "checkRefreshState"}, function(response) {
 
 //************Listeners for controlling the setTime modal********************
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-	if(message.task == "setTimeModal"){
-    	
-    	setTimeModal = createTimeModal();
-    	document.body.appendChild(setTimeModal);
-    	
+	if(message.task == "setTimeModal"){   	
+    	createTimeModal();
     }
-    else if(message.task == 'submitTimeModal'){
+    else if(message.task == 'submitTimeModal'){ //when submit button is clicked
     	
     	console.log("Submitted Modal");
     	//Local Storage functions
@@ -110,48 +107,18 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     	setTimeModal.parentNode.removeChild(setTimeModal);
 
     }
-    else if(message.task == 'closeTimeModal'){
+    else if(message.task == 'closeTimeModal'){ //when close button is clicked
     	console.log("Closing the time modal");
     	setTimeModal.parentNode.removeChild(setTimeModal);
     }
 });
 
-//creates the music player in the right side of window
-function createMusicPlayer() {
-	iframe = document.createElement('iframe');
-	iframe.id = "yrp111";
-	iframe.style.height = "100%";
-	iframe.style.width = "0px";
-	iframe.style.position = "fixed";
-	iframe.style.top = "0px";
-	iframe.style.right = "0px";
-	iframe.style.zIndex = "9000000000000000000";
-	iframe.frameBorder = "none";
-	iframe.style.transition = "0.5s";
-	iframe.style.opacity = "0.95";
-	iframe.src = chrome.extension.getURL("musicPlayer.html");
 
-	document.body.appendChild(iframe);	
-}
+//*****************function definitions*********************
 
-function createTimeModal(){
-	let temp_iframe = document.createElement('iframe');
-	temp_iframe.style.height = "250px";
-	temp_iframe.style.width = "400px";
-	temp_iframe.style.position = "fixed";
-	temp_iframe.style.top = "200px";
-	temp_iframe.style.left = "400px";
-	temp_iframe.style.zIndex = "9000000000000000004";
-	temp_iframe.frameBorder = "none";
-	temp_iframe.style.transition = "0.5s";
-	temp_iframe.style.opacity = "0.95";
-	temp_iframe.src = chrome.extension.getURL("setTimeForm.html");
-
-	return temp_iframe;
-}
 
 function removeMusicPlayer() {
-	var temp_iframe = document.getElementById('yrp111'); 
+	let temp_iframe = document.getElementById('yrp111'); 
 	temp_iframe.parentNode.removeChild(temp_iframe);
 }
 
@@ -192,5 +159,40 @@ function initializeMusicPlayer() {
 	Initializes the music player with the song in the webpage
 	Does not play the song, in a paused state
 	*/
+	var vid = document.getElementsByTagName('video'); //in
+	var url = vid[0].baseURI; //in
+	console.log(url); //in
 
+}
+
+//creates the music player in the right side of window
+function createMusicPlayer() {
+	iframe = document.createElement('iframe');
+	iframe.id = "yrp111";
+	iframe.style.height = "100%";
+	iframe.style.width = "0px";
+	iframe.style.position = "fixed";
+	iframe.style.top = "0px";
+	iframe.style.right = "0px";
+	iframe.style.zIndex = "9000000000000000000";
+	iframe.frameBorder = "none";
+	iframe.style.transition = "0.5s";
+	iframe.style.opacity = "0.95";
+	iframe.src = chrome.extension.getURL("musicPlayer.html");
+	document.body.appendChild(iframe);	
+}
+
+function createTimeModal(){
+	setTimeModal = document.createElement('iframe');
+	setTimeModal.style.height = "250px";
+	setTimeModal.style.width = "400px";
+	setTimeModal.style.position = "fixed";
+	setTimeModal.style.top = "200px";
+	setTimeModal.style.left = "400px";
+	setTimeModal.style.zIndex = "9000000000000000004";
+	setTimeModal.frameBorder = "none";
+	setTimeModal.style.transition = "0.5s";
+	setTimeModal.style.opacity = "0.95";
+	setTimeModal.src = chrome.extension.getURL("setTimeForm.html");
+	document.body.appendChild(setTimeModal);
 }
