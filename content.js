@@ -32,15 +32,6 @@ console.log("YRP Content JS has loaded");
 
 var iframe, setTimeModal; //iframe stores the main music player
 var toggleState = false;
-var video_detail = {
-	url: "",
-	repeats: 0,
-	title: "",
-	playlist: "",
-	starred: false,
-	startTime: 0,
-	endTime: 0
-};
 //****************Unknown variable declaration*********************
 /*var vid = document.getElementsByTagName('video'); //in
 var url = vid[0].baseURI; //in
@@ -102,7 +93,28 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     else if(message.task == 'submitTimeModal'){
     	
     	console.log("Submitted Modal");
-    	//Local Storage functions
+
+    	//Get data of current playing video
+    	var title = document.querySelector('title').innerText;
+		var vid = document.getElementsByTagName('video');
+		var videoid = vid[0].baseURI.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
+		if(videoid != null) {
+			console.log("video id = ",videoid[1]);
+		} else { 
+		    console.log("The youtube url is not valid.");
+		}
+    	var srcImage ="https://i1.ytimg.com/vi/"+videoid[1]+"/default.jpg";
+    	console.log(srcImage);
+		var video_detail = {
+			url: vid[0].baseURI,
+			repeats: 0,
+			title: title,
+			playlist: "",
+			playIcon: srcImage,
+			starred: false,
+			startTime: 0,
+			endTime: 0
+		};
     	chrome.runtime.sendMessage({task: "submittedForm", video_detail},function(response){
 
     	});
