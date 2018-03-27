@@ -32,6 +32,19 @@ console.log("YRP Content JS has loaded");
 
 var iframe, setTimeModal; //iframe stores the main music player
 var toggleState = false;
+var video_detail = {
+	url: "",
+	repeats: 0,
+	title: "",
+	playlist: "",
+	starred: false,
+	startTime: 0,
+	endTime: 0
+};
+//****************Unknown variable declaration*********************
+/*var vid = document.getElementsByTagName('video'); //in
+var url = vid[0].baseURI; //in
+console.log(url); //in*/
 
 
 /*
@@ -90,6 +103,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     	
     	console.log("Submitted Modal");
     	//Local Storage functions
+    	chrome.runtime.sendMessage({task: "submittedForm", video_detail},function(response){
+
+    	});
 
     	setTimeModal.parentNode.removeChild(setTimeModal);
 
@@ -99,14 +115,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     	setTimeModal.parentNode.removeChild(setTimeModal);
     }
 });
-
-
-
-//****************Unknown variable declaration*********************
-var vid = document.getElementsByTagName('video'); //in
-var url = vid[0].baseURI; //in
-console.log(url); //in
-
 
 //creates the music player in the right side of window
 function createMusicPlayer() {
