@@ -15,8 +15,8 @@ Get URL of webpage from
 Identify the video in the webpage, get title, thumbnail, 
 */
 
+console.log("musicPlayer.js has loaded!!");
 
-console.log("YRP has loaded!!");
 var video_detail = {
 	url: "",
 	repeats: 0,
@@ -39,37 +39,37 @@ video_detail.url =
 video_detail.title = document.querySelector('h1.title').innerText;*/
 
 
+/*
+Listener to load a particular state of the music player(state1 or state2).
+The message will contain 
+message = {
+	task: "setPlayerState",
+	data: {//information about the video},
+	state: 1 or 2
+}
+*/
+//chrome.runtime.onMessage.addEventListener(function())----------
+
 
 // sets listener to openModal button for click action
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("openModal").addEventListener("click", popupModal);
 });
 
-//local storage
-chrome.storage.local.get("count", function(data) {
-    
-});
-
-chrome.storage.local.get("title", function(data){
-	var txt = data.title;
-	console.log("The "+ txt);
-	var title1 = document.getElementById("txt");
-	title1.textContent = txt;
-});
-
-
 function popupModal() {
-	console.log("openModal button clicked!");
-    chrome.tabs.query({currentWindow: true, active: true}, function (tabs){ 
-    	//console.log("Reached");
-    	chrome.tabs.sendMessage(tabs[0].id, {task: "setTimeModal"});
-   });
+	/*Opens setTimeForm.html*/
+	console.log("openTimeModal button clicked!");
+	//get the player.tab_id and send 'setTimeModal' message to content.js
+	chrome.runtime.sendMessage({task:"getPlayerTabId"}, function(response) {
+		chrome.tabs.sendMessage(response.playerTabId, {task: "setTimeModal"})
+		return true;
+	});
 }
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-	console.log("Go lucky");
 	if(message.task == 'submittedForm'){
-		console.log("Submitted Form Go lucky");
+		console.log("Video data received from <content.js>");
+
 		console.log(message.video_detail.starred);
 		console.log(message.video_detail.url);
 		console.log(message.video_detail.title);

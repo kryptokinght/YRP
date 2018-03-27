@@ -31,11 +31,16 @@ console.log("YRP Content JS has loaded");
 
 
 var iframe, setTimeModal; //iframe stores the main music player
-var toggleState = false;
-//****************Unknown variable declaration*********************
-/*var vid = document.getElementsByTagName('video'); //in
-var url = vid[0].baseURI; //in
-console.log(url); //in*/
+
+var video_detail = {
+	url: "",
+	repeats: 0,
+	title: "",
+	playlist: "",
+	starred: false,
+	startTime: 0,
+	endTime: 0
+};
 
 
 /*
@@ -88,28 +93,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     	createTimeModal();
     }
     else if(message.task == 'submitTimeModal'){ //when submit button is clicked
-    	
-    	console.log("Submitted Modal");
-
-    	//Get data of current playing video
-    	var title = document.querySelector('title').innerText;
-		var vid = document.getElementsByTagName('video');
-		var videoid = vid[0].baseURI.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
-    	var srcImage ="https://i1.ytimg.com/vi/"+videoid[1]+"/default.jpg";
-		var video_detail = {
-			url: vid[0].baseURI,
-			repeats: 0,
-			title: title,
-			playlist: "",
-			playIcon: srcImage,
-			starred: false,
-			startTime: message.timeData.startTime,
-			endTime: message.timeData.endTime
-		};
-    	chrome.runtime.sendMessage({task: "submittedForm", video_detail},function(response){
-
-    	});
-
+    	console.log("Submitted Modal and send video data to musicPlayer.js");
+    	initializeMusicPlayer();
     	setTimeModal.parentNode.removeChild(setTimeModal);
 
     }
@@ -131,6 +116,8 @@ function removeMusicPlayer() {
 function loadPlayer() {
 	console.log("loadPlayer called!");
 	createMusicPlayer(); //creates the template
+	//check wether video in local storage or not and initialize the player
+	initializeMusicPlayer();
 	toggle();
 }
 
@@ -146,28 +133,76 @@ function togglePlayer() { //complete
 
 function refreshPlayer() {
 	console.log("refreshPlayer called!");
+	toggle(true); //force open music player
+	//open player(toggle to open)
+	initializeMusicPlayer();
 }
 
-function toggle() {
+function toggle(forceOpen = false) {
 	//toggles the music player iframe, opens and closes it.
-    if(iframe.style.width == "0px"){
+	if(forceOpen) {
+		iframe.style.width="300px";
+		return;
+	}
+    if(iframe.style.width == "0px")
         iframe.style.width="300px";
-        toggleState = true;
-    }
-    else{
+    else
         iframe.style.width="0px";
-        toggleState = false;
-    }
+}
+
+function getVideoData() {
+	let title = document.querySelector('title').innerText;
+	let vid = document.getElementsByTagName('video');
+	//getting the thumbnail of the video
+	let videoid = vid[0].baseURI.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
+	let srcImage ="https://i1.ytimg.com/vi/"+videoid[1]+"/default.jpg";
+
+	let video_detail = {
+		url: vid[0].baseURI,
+		repeats: 0,
+		title: title,
+		playlist: "",
+		playIcon: srcImage,
+		starred: false,
+		startTime: 0,
+		endTime: vid[0].duration - 0.03
+	};
+	return video_detail;
 }
 
 function initializeMusicPlayer() {
 	/*
-	Initializes the music player with the song in the webpage
-	Does not play the song, in a paused state
+	> scrapes video off page and stores in video_detail
+	> checks wether video present in local storage and changes playerState to 1 or 2
+	> sends message to musicPlayer.js to initialize the player containing video_detail
+	  and playerState  
 	*/
-	var vid = document.getElementsByTagName('video'); //in
-	var url = vid[0].baseURI; //in
-	console.log(url); //in
+	let video_detail = getVideoData(); 
+	chrome.runtime.sendMessage({task: "searchUrlInStorage", url: video_detail.url}, function(response) {
+		if(response.playerState == 2) {
+			//do something with the videoData--*/-*/*/-*/-*/-*/-*/-*/-*/-*/
+
+			chrome.runtime.sendMessage({
+				task: "videoData", 
+				video_detail, 
+				playerState: 2
+			}, function(response){
+				console.log("Video information sent to musicPlayer.js")
+			});		
+		}
+		else {
+			//send videoData as it is
+			chrome.runtime.sendMessage({
+				task: "videoData", 
+				video_detail, 
+				playerState: 1
+			}, function(response){
+				console.log("Video information sent to musicPlayer.js")
+			});	
+		}
+		return true;
+	});
+	
 
 }
 
