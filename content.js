@@ -233,6 +233,7 @@ function createMusicPlayer() {
 	iframe.style.transition = "0.5s";
 	iframe.style.opacity = "0.95";
 	iframe.src = chrome.extension.getURL("musicPlayer.html");
+	
 	document.body.appendChild(iframe);	
 }
 

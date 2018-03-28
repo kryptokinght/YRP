@@ -67,6 +67,9 @@ function popupModal() {
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 
+	/*
+		Renders the music player with either of the two states
+	*/
 	if(message.task == 'videoData'){
 		console.log("Video data received from <content.js>");
 		chrome.runtime.sendMessage({task:"check", ps:message.playerState}, function(response) {
@@ -75,10 +78,23 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 		});
 		console.log(message.video_detail.starred);
 		console.log(message.video_detail.url);
+		console.log(message.playerState);
 		console.log(message.video_detail.title);
 		console.log(message.video_detail.playIcon);
 		console.log(message.video_detail.startTime);
 		console.log(message.video_detail.endTime);
+
+		//Render the basic music Player
+		if (message.playerState == 1) {
+			console.log("yes you are here");
+			document.getElementById('mimg').src = message.video_detail.playIcon;
+			document.getElementById('txt').innerText = message.video_detail.title;
+		}
+
+		//Render the music Player stored in localStorage
+		else if (message.playerState == 2){
+
+		}
 	}
 });
 
