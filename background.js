@@ -6,10 +6,10 @@ Everything starts with the click on BrowserAction.
 /*
 LocalStorage format for storing MusicPlayer info
 {
-	yrp: {
-		history : [{song1},{song2},{song3}],
+	yrps: {
+		recents : [{song1},{song2},{song3}],
 		starred : ["songurl1","songurl2","songurl3"],
-		playlist : [
+		playlists : [
 			{"playlist1": ["songurl1","songurl2","songurl3"]},
 			{"playlist2": ["songurl1","songurl2","songurl3"]},
 			{"playlist3": ["songurl1","songurl2","songurl3"]}
@@ -28,11 +28,56 @@ var video_detail = {
 	repeats: 0,
 	title: "",
 	playlist: "",
+	playIcon: "",
 	starred: false,
 	startTime: 0,
 	endTime: 0
 };
-var history, starred, playlist;
+var recents=[], starred=[], playlists=[];
+//initializing history, starred, playlists
+chrome.storage.local.get(["yrps"], function(result) {
+	if(Object.keys(result).length === 0) { //when localStorage is empty
+		console.log("LocalStorage is empty!");
+	}
+	else {
+		console.log("Value of local storage");
+		console.log(result);
+		history = result["yrps"]["history"];
+		playlists = result["yrps"]["playlists"];
+		starred = result["yrps"]["starred"];
+		console.log("recents");
+		console.log(recents);
+		console.log("playlists");
+		console.log(playlists);
+		console.log("starred");
+		console.log(starred);
+	}
+});
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	if(message.task == "searchUrlInStorage") {
+		let found = -1;
+		console.log("recents");
+		console.log(recents);
+		console.log("playlists");
+		console.log(playlists);
+		console.log("starred");
+		console.log(starred);
+		for(let i = 0; i < recents.length; i++) {
+			if(recents[i].url == message.url) {
+				found = i;
+				break;
+			}
+		}
+		if(found > -1) {
+			sendResponse({playerState:2, videoData: recents[found]});
+		}
+		else
+			sendResponse({playerState:1});
+	}
+});
+
+
 
 //********************************************************************************
 // EVERYTHING starts with the user clicking on the BrowserAction button
@@ -61,7 +106,7 @@ chrome.browserAction.onClicked.addListener(function(){
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			//1.toggle condition
 			if(tabs[0].id == player.tab_id) {
-				console.log("toggle player message sent");
+				//console.log("toggle player message sent");
 				chrome.tabs.sendMessage(tabs[0].id, {task:"togglePlayer"})
 			}
 			//2.active tab change
