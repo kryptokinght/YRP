@@ -28,7 +28,6 @@ var video_detail = {
 };
 
 
-
 /*
 //scrap the video element from webpage
 var vid = document.getElementsByTagName('video');
@@ -67,9 +66,12 @@ function popupModal() {
 }
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-	if(message.task == 'submittedForm'){
+	if(message.task == 'videoData'){
 		console.log("Video data received from <content.js>");
-
+		chrome.runtime.sendMessage({task:"check", ps:message.playerState}, function(response) {
+			console.log(response);
+			return true;
+		});
 		console.log(message.video_detail.starred);
 		console.log(message.video_detail.url);
 		console.log(message.video_detail.title);
@@ -77,7 +79,18 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 		console.log(message.video_detail.startTime);
 		console.log(message.video_detail.endTime);
 	}
-})
+});
+
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
+	if(message.task == 'videoDataSave'){
+		console.log("Video data save LS received from <content.js>");
+		chrome.runtime.sendMessage({task:"check", ps:message.playerState}, function(response) {
+			console.log(response);
+			return true;
+		});
+	}
+});
 
 /*
 
@@ -88,3 +101,7 @@ console.log(src1);
 var img1 = document.getElementById("mimg");
 img1.src = src1;
 */
+console.log("calling");
+chrome.runtime.sendMessage({task:"getPlayerTabId"}, function(response) {
+	chrome.tabs.sendMessage(response.playerTabId, {task:"initializeMusicPlayer"});
+});

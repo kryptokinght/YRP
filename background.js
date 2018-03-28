@@ -54,30 +54,6 @@ chrome.storage.local.get(["yrps"], function(result) {
 	}
 });
 
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-	if(message.task == "searchUrlInStorage") {
-		let found = -1;
-		console.log("recents");
-		console.log(recents);
-		console.log("playlists");
-		console.log(playlists);
-		console.log("starred");
-		console.log(starred);
-		for(let i = 0; i < recents.length; i++) {
-			if(recents[i].url == message.url) {
-				found = i;
-				break;
-			}
-		}
-		if(found > -1) {
-			sendResponse({playerState:2, videoData: recents[found]});
-		}
-		else
-			sendResponse({playerState:1});
-	}
-});
-
-
 
 //********************************************************************************
 // EVERYTHING starts with the user clicking on the BrowserAction button
@@ -197,3 +173,39 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	}
 	return true;
 });
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	if(message.task == "check") {
+		console.log("Message <musicPlayer.js> check");
+		console.log(message.ps);	
+	}
+	return true;
+});
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	if(message.task == "searchUrlInStorage") {
+		let found = -1;
+		for(let i = 0; i < recents.length; i++) {
+			if(recents[i].url == message.url) {
+				found = i;
+				break;
+			}
+		}
+		if(found > -1) {
+			sendResponse({playerState:2, videoData: recents[found]});
+		}
+		else
+			sendResponse({playerState:1});
+	}
+});
+
+/*chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	
+	if(message.task == "iss") {
+		console.log("ISSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSs");
+		chrome.runtime.sendMessage({task:"dick"}, function(response) {
+			console.log(response.value);
+		});
+	}
+	return true;
+});*/
