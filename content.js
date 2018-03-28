@@ -62,6 +62,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 		refreshPlayer();
 	}
 	else if(message.task == "loadPlayer") {
+		console.log('Created Music Player');
 		loadPlayer();
 	}
 	else if(message.task == "togglePlayer") {
@@ -102,6 +103,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     	createTimeModal();
     }
     else if(message.task == 'submitTimeModal'){ //when submit button is clicked
+
     	console.log("Submitted Modal, Waiting to send video data to musicPlayer.js");
     	initializeMusicPlayer(true);
     	setTimeModal.parentNode.removeChild(setTimeModal);
@@ -194,7 +196,7 @@ function initializeMusicPlayer(save = false) {
 			console.log(2222222222222222);
 			chrome.runtime.sendMessage({
 				task: "videoData", 
-				video_detail, 
+				video_detail,
 				playerState: 2
 			}, function(response){
 				console.log("Video information sent to musicPlayer.js");
@@ -203,6 +205,7 @@ function initializeMusicPlayer(save = false) {
 		else {
 			console.log(1111111111);
 			//send videoData as it is
+			console.log("State 1");
 			chrome.runtime.sendMessage({
 				task: "videoData", 
 				video_detail, 
@@ -230,6 +233,7 @@ function createMusicPlayer() {
 	iframe.style.transition = "0.5s";
 	iframe.style.opacity = "0.95";
 	iframe.src = chrome.extension.getURL("musicPlayer.html");
+	
 	document.body.appendChild(iframe);	
 }
 
