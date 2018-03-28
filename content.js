@@ -53,6 +53,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 		refreshPlayer();
 	}
 	else if(message.task == "loadPlayer") {
+		console.log('Created Music Player');
 		loadPlayer();
 	}
 	else if(message.task == "togglePlayer") {
@@ -94,6 +95,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     }
     else if(message.task == 'submitTimeModal'){ //when submit button is clicked
     	console.log("Submitted Modal and send video data to musicPlayer.js");
+
     	initializeMusicPlayer();
     	setTimeModal.parentNode.removeChild(setTimeModal);
 
@@ -177,14 +179,15 @@ function initializeMusicPlayer() {
 	> sends message to musicPlayer.js to initialize the player containing video_detail
 	  and playerState  
 	*/
-	let video_detail = getVideoData(); 
+	let video_detail = getVideoData();
+	console.log(video_detail);
 	chrome.runtime.sendMessage({task: "searchUrlInStorage", url: video_detail.url}, function(response) {
 		if(response.playerState == 2) {
 			//do something with the videoData--*/-*/*/-*/-*/-*/-*/-*/-*/-*/
 
 			chrome.runtime.sendMessage({
 				task: "videoData", 
-				video_detail, 
+				video_detail,
 				playerState: 2
 			}, function(response){
 				console.log("Video information sent to musicPlayer.js")
@@ -192,6 +195,7 @@ function initializeMusicPlayer() {
 		}
 		else {
 			//send videoData as it is
+			console.log("State 1");
 			chrome.runtime.sendMessage({
 				task: "videoData", 
 				video_detail, 
