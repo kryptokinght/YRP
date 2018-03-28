@@ -28,7 +28,6 @@ var video_detail = {
 };
 
 
-
 /*
 //scrap the video element from webpage
 var vid = document.getElementsByTagName('video');
@@ -67,9 +66,13 @@ function popupModal() {
 }
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-	/*if(message.task == 'submittedForm'){
-		console.log("Video data received from <content.js>");
 
+	if(message.task == 'videoData'){
+		console.log("Video data received from <content.js>");
+		chrome.runtime.sendMessage({task:"check", ps:message.playerState}, function(response) {
+			console.log(response);
+			return true;
+		});
 		console.log(message.video_detail.starred);
 		console.log(message.video_detail.url);
 		console.log(message.video_detail.title);
@@ -77,27 +80,21 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 		console.log(message.video_detail.startTime);
 		console.log(message.video_detail.endTime);
 	}
+});
 
-	/*
-		Render Music Player with either of two states:
-		1. If it is not found in the local storage then load state 1
-		2. If it is found in the local storage then load state 2
-	*/
-	if(message.task == 'videoData'){
 
-		console.log("Response state");
-		//Render state 1
-		if(message.playerState == 1){
-
-			console.log("Response state 1");
-			var titleIcon = document.getElementById('mimg');
-			titleIcon.src = video_detail.playIcon;
-
-		}
-
-		//Render state 2
-		else if(message.playerState == 2){
-
-		}
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
+	if(message.task == 'videoDataSave'){
+		console.log("Video data save LS received from <content.js>");
+		chrome.runtime.sendMessage({task:"check", ps:message.playerState}, function(response) {
+			console.log(response);
+			return true;
+		});
 	}
+});
+
+
+console.log("calling");
+chrome.runtime.sendMessage({task:"getPlayerTabId"}, function(response) {
+	chrome.tabs.sendMessage(response.playerTabId, {task:"initializeMusicPlayer"});
 });

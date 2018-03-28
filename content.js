@@ -43,6 +43,15 @@ var video_detail = {
 };
 
 
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	if(message.task == "initializeMusicPlayer") {
+		console.log("Initialzing music player");
+		initializeMusicPlayer();
+	}
+	return true;
+});
+
+
 /*
 	1. and 2.
 	All the 4 listeners for 1. and 2. implemented here.
@@ -94,9 +103,9 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     	createTimeModal();
     }
     else if(message.task == 'submitTimeModal'){ //when submit button is clicked
-    	console.log("Submitted Modal and send video data to musicPlayer.js");
 
-    	initializeMusicPlayer();
+    	console.log("Submitted Modal, Waiting to send video data to musicPlayer.js");
+    	initializeMusicPlayer(true);
     	setTimeModal.parentNode.removeChild(setTimeModal);
 
     }
@@ -115,11 +124,10 @@ function removeMusicPlayer() {
 	temp_iframe.parentNode.removeChild(temp_iframe);
 }
 
-function loadPlayer() {
+function loadPlayer() { //not working properly
 	console.log("loadPlayer called!");
-	createMusicPlayer(); //creates the template
+	createMusicPlayer();
 	//check wether video in local storage or not and initialize the player
-	initializeMusicPlayer();
 	toggle();
 }
 
@@ -137,7 +145,7 @@ function refreshPlayer() {
 	console.log("refreshPlayer called!");
 	toggle(true); //force open music player
 	//open player(toggle to open)
-	initializeMusicPlayer();
+	initializeMusicPlayer(true);
 }
 
 function toggle(forceOpen = false) {
@@ -169,31 +177,33 @@ function getVideoData() {
 		startTime: 0,
 		endTime: vid[0].duration - 0.03
 	};
+
 	return video_detail;
 }
 
-function initializeMusicPlayer() {
+function initializeMusicPlayer(save = false) {
 	/*
 	> scrapes video off page and stores in video_detail
 	> checks wether video present in local storage and changes playerState to 1 or 2
 	> sends message to musicPlayer.js to initialize the player containing video_detail
 	  and playerState  
 	*/
-	let video_detail = getVideoData();
-	console.log(video_detail);
+	let video_detail = getVideoData(); 
+	//console.log(video_detail);
 	chrome.runtime.sendMessage({task: "searchUrlInStorage", url: video_detail.url}, function(response) {
+		console.log(response);
 		if(response.playerState == 2) {
-			//do something with the videoData--*/-*/*/-*/-*/-*/-*/-*/-*/-*/
-
+			console.log(2222222222222222);
 			chrome.runtime.sendMessage({
 				task: "videoData", 
 				video_detail,
 				playerState: 2
 			}, function(response){
-				console.log("Video information sent to musicPlayer.js")
+				console.log("Video information sent to musicPlayer.js");
 			});		
 		}
 		else {
+			console.log(1111111111);
 			//send videoData as it is
 			console.log("State 1");
 			chrome.runtime.sendMessage({
@@ -201,13 +211,12 @@ function initializeMusicPlayer() {
 				video_detail, 
 				playerState: 1
 			}, function(response){
-				console.log("Video information sent to musicPlayer.js")
+				console.log("Video information sent to musicPlayer.js");
 			});	
 		}
+
 		return true;
 	});
-	
-
 }
 
 //creates the music player in the right side of window
@@ -241,3 +250,6 @@ function createTimeModal(){
 	setTimeModal.src = chrome.extension.getURL("setTimeForm.html");
 	document.body.appendChild(setTimeModal);
 }
+
+
+
