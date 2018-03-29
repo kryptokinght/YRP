@@ -209,7 +209,15 @@ function initializeMusicPlayer(save = false, timeData = {}) {
 	} 
 	//console.log(video_detail);
 	chrome.runtime.sendMessage({task: "searchUrlInStorage", url: video_detail.url}, function(response) {
-		if(response.playerState == 2) {
+		if(save && response.playerState == 2) {
+			/*Data already present in localStorage, just change timeData*/
+			chrome.runtime.sendMessage({
+				task:"videoDataModify",
+				url: video_detail.url,
+				timeData 
+			});
+		}
+		else if(response.playerState == 2) {
 			chrome.runtime.sendMessage({
 				task: taskState, 
 				video_detail, 

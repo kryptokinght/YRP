@@ -48,22 +48,18 @@ document.addEventListener("DOMContentLoaded", function() {
 /************message listeners for videoData and videoDataSave**********/
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 	if(message.task == 'videoData'){
-		console.log("Video data received from <content.js>");
+		console.log("Video data init received from <content.js>");
+		//initializes player for both state 1 and 2
 		initializePlayer(message.video_detail, message.playerState);
-		
-		/*console.log(message.video_detail.starred);
-		console.log(message.video_detail.url);
-		console.log(message.video_detail.title);
-		console.log(message.video_detail.playIcon);
-		console.log(message.video_detail.startTime);
-		console.log(message.video_detail.endTime);*/
 	}
 	else if(message.task == 'videoDataSave'){
 		console.log("Video data save LS received from <content.js>");
-		chrome.runtime.sendMessage({task:"check", ps:message.playerState}, function(response) {
-			console.log(response); //save data here into localStorage
-			return true;
+		console.log(message.video_detail);
+		chrome.runtime.sendMessage({
+			task: "setLocalStorageRecents", 
+			video_detail: message.video_detail
 		});
+		initializePlayer(message.video_detail, message.playerState);
 	}
 });
 
@@ -99,19 +95,11 @@ function initializePlayer(videoData, playerState) {
 		title.innerHTML = videoData.title;
 	}
 	else if(playerState == 2) {
-
+		//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+		//YE WALA BANA DE
 	}
 }
 
-/*
-
-var url = data.count;
-console.log(url);
-
-console.log(src1);
-var img1 = document.getElementById("mimg");
-img1.src = src1;
-*/
 
 /*
 **roundabout process in the sense that message is sent to content.js which

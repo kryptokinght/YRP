@@ -34,6 +34,16 @@ var video_detail = {
 	endTime: 0
 };
 var recents=[], starred=[], playlists=[];
+/*chrome.storage.local.set({
+	yrps: {
+		recents: recents,
+		starred : starred,
+		playlists : playlists
+	}
+}, 
+function() {
+	console.log("Recents Value stored");
+});*/
 
 var CurrentTab;
 //initializing history, starred, playlists
@@ -42,17 +52,11 @@ chrome.storage.local.get(["yrps"], function(result) {
 		console.log("LocalStorage is empty!");
 	}
 	else {
-		console.log("Value of local storage");
-		console.log(result);
-		history = result["yrps"]["history"];
+		recents = result["yrps"]["recents"];
 		playlists = result["yrps"]["playlists"];
 		starred = result["yrps"]["starred"];
 		console.log("recents");
 		console.log(recents);
-		console.log("playlists");
-		console.log(playlists);
-		console.log("starred");
-		console.log(starred);
 	}
 });
 
@@ -139,7 +143,7 @@ chrome.tabs.onUpdated.addListener( //whenever any of the tab is updated
   		let patt = new RegExp("https://www.youtube.com/watch");
   		if(patt.test(tabs[0].url))
   			chrome.browserAction.enable(tabs[0].id);
-  		
+
   		if(tabs[0].id == player.tab_id && tabs[0].url != player.active_url) { //if the updated tabID matches the player_tab_id
   			console.log("Active player Tab updated");
   			chrome.tabs.sendMessage(player.tab_id, {task:"playerTabUpdated"});
@@ -185,19 +189,24 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "searchUrlInStorage") {
-		let found = -1;
-		for(let i = 0; i < recents.length; i++) {
-			if(recents[i].url == message.url) {
-				found = i;
-				break;
-			}
-		}
+		let found = searchUrl(message.url);
 		if(found > -1) {
 			sendResponse({playerState:2, videoData: recents[found]});
 		}
 		else
 			sendResponse({playerState:1});
 	}
+});
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	if(message.task == "videoDataModify") {
+		let found = searchUrl(message.url);
+		console.log("modify" + found);
+		recents[found].startTime = message.timeData.startTime;
+		recents[found].endTime = message.timeData.endTime;
+
+		saveData();
+	}
+	return true;
 });
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -210,3 +219,35 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	}
 	return true;
 });
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	if(message.task == "setLocalStorageRecents") {
+		recents.push(message.video_detail);	
+		console.log(recents);
+		saveData();	
+	}
+	return true;
+});
+
+function saveData() {
+	chrome.storage.local.set({
+		yrps: {
+			recents: recents,
+			starred : starred,
+			playlists : playlists
+		}
+	}, 
+	function() {
+		console.log("Recents Value stored");
+	});
+}
+function searchUrl(url) {
+	let found = -1;
+	for(let i = 0; i < recents.length; i++) {
+		if(recents[i].url == url) {
+			found = i;
+			break;
+		}
+	}
+	return found;
+}
