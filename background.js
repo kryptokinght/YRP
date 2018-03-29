@@ -34,6 +34,8 @@ var video_detail = {
 	endTime: 0
 };
 var recents=[], starred=[], playlists=[];
+
+var CurrentTab;
 //initializing history, starred, playlists
 chrome.storage.local.get(["yrps"], function(result) {
 	if(Object.keys(result).length === 0) { //when localStorage is empty
@@ -125,14 +127,19 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
 
 /*
+Whenever a tab updates, it its URL matches the youtube watch regx, browserAction
+activates.
 Whenever the ACTIVE TAB is updated, send message to content_script to change state
 of the player.
 */
 chrome.tabs.onUpdated.addListener( //whenever any of the tab is updated
   function(tabId, changeInfo, tab) {
+  	console.log("Tab updated!!");
   	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-  		//console.log("tabs[0] " + tabs[0].id);
-  		//console.log("tab" + player_tab_id);
+  		let patt = new RegExp("https://www.youtube.com/watch");
+  		if(patt.test(tabs[0].url))
+  			chrome.browserAction.enable(tabs[0].id);
+  		
   		if(tabs[0].id == player.tab_id && tabs[0].url != player.active_url) { //if the updated tabID matches the player_tab_id
   			console.log("Active player Tab updated");
   			chrome.tabs.sendMessage(player.tab_id, {task:"playerTabUpdated"});
@@ -140,6 +147,8 @@ chrome.tabs.onUpdated.addListener( //whenever any of the tab is updated
   	});
   }
 );
+
+
 
 // listens for getCurrentTabID task and sends the current tab ID
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -168,16 +177,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "getCurrentTabUrl") {
 		console.log("Message <content.js> getCurrentTabUrl");
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-			sendResponse({activeTabId: tabs[0].url});
+			sendResponse({activeTabUrl: tabs[0].url});
 		});		
-	}
-	return true;
-});
-
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-	if(message.task == "check") {
-		console.log("Message <musicPlayer.js> check");
-		console.log(message.ps);	
 	}
 	return true;
 });
@@ -200,13 +201,13 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	}
 });
 
-/*chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-	
-	if(message.task == "iss") {
-		console.log("ISSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSs");
-		chrome.runtime.sendMessage({task:"dick"}, function(response) {
-			console.log(response.value);
-		});
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	if(message.task == "disableBrowserAction") {
+		console.log("disable");
+		chrome.browserAction.disable(sender.tab.id);		
+	}
+	else if(message.task == "enableBrowserAction") {
+		chrome.browserAction.enable(sender.tab.id);		
 	}
 	return true;
-});*/
+});

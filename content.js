@@ -37,16 +37,18 @@ var video_detail = {
 	repeats: 0,
 	title: "",
 	playlist: "",
+	playIcon: "",
 	starred: false,
 	startTime: 0,
 	endTime: 0
 };
 
+toggleBrowserAction();
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "initializeMusicPlayer") {
 		console.log("Initialzing music player");
-		initializeMusicPlayer();
+		initializeMusicPlayer(false);
 	}
 	return true;
 });
@@ -59,6 +61,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "playerTabUpdated") {
 		console.log("player tab update refreshplayer() called");
+		toggleBrowserAction(); //sets browserAction on or off DOESnt work
 		refreshPlayer();
 	}
 	else if(message.task == "loadPlayer") {
@@ -84,15 +87,14 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	RUNS ONLY ONCE when content.js loads
 */
 chrome.runtime.sendMessage({task: "checkRefreshState"}, function(response) {
-	console.log("Checking for refresh!!");
-	console.log(response);	
+	//console.log("Checking for refresh!!");	
 	if(response.refreshState) {
-		console.log("page refreshed loadPlayer() called")
+		//console.log("page refreshed loadPlayer() called")
 		loadPlayer();
 	}
 	else {
-		console.log("Music player already active in another tab or this tab");
-		console.log("Click on browserAction to activate here");
+		//console.log("Music player already active in another tab or this tab");
+		//console.log("Click on browserAction to activate here");
 	}
 });
 //---------------------------------------------------------------------------
@@ -125,33 +127,37 @@ function removeMusicPlayer() {
 }
 
 function loadPlayer() { //not working properly
-	console.log("loadPlayer called!");
+	//console.log("loadPlayer called!");
+	//creates the music player template
 	createMusicPlayer();
-	//check wether video in local storage or not and initialize the player
 	toggle();
 }
 
 function closePlayer() { //complete
-	console.log("closePlayer called!");
+	//console.log("closePlayer called!");
 	removeMusicPlayer();
 }
 
 function togglePlayer() { //complete
-	console.log("togglePlayer called!");
+	//console.log("togglePlayer called!");
 	toggle();
 }
 
 function refreshPlayer() {
 	console.log("refreshPlayer called!");
-	toggle(true); //force open music player
+	toggle(true, false); //force open music player
 	//open player(toggle to open)
-	initializeMusicPlayer(true);
+	initializeMusicPlayer(false);
 }
 
-function toggle(forceOpen = false) {
+function toggle(forceOpen = false, forceClose = false) {
 	//toggles the music player iframe, opens and closes it.
 	if(forceOpen) {
 		iframe.style.width="300px";
+		return;
+	}
+	if(forceClose) {
+		iframe.style.width="0px";
 		return;
 	}
     if(iframe.style.width == "0px")
@@ -188,14 +194,16 @@ function initializeMusicPlayer(save = false) {
 	> sends message to musicPlayer.js to initialize the player containing video_detail
 	  and playerState  
 	*/
+	let taskState = "videoData";
+	if(save)
+		taskState = "videoDataSave";
 	let video_detail = getVideoData(); 
 	//console.log(video_detail);
 	chrome.runtime.sendMessage({task: "searchUrlInStorage", url: video_detail.url}, function(response) {
 		console.log(response);
 		if(response.playerState == 2) {
-			console.log(2222222222222222);
 			chrome.runtime.sendMessage({
-				task: "videoData", 
+				task: taskState, 
 				video_detail,
 				playerState: 2
 			}, function(response){
@@ -203,11 +211,10 @@ function initializeMusicPlayer(save = false) {
 			});		
 		}
 		else {
-			console.log(1111111111);
 			//send videoData as it is
 			console.log("State 1");
 			chrome.runtime.sendMessage({
-				task: "videoData", 
+				task: taskState, 
 				video_detail, 
 				playerState: 1
 			}, function(response){
@@ -250,6 +257,18 @@ function createTimeModal(){
 	setTimeModal.style.opacity = "0.95";
 	setTimeModal.src = chrome.extension.getURL("setTimeForm.html");
 	document.body.appendChild(setTimeModal);
+}
+
+function toggleBrowserAction() {
+	/*Toggles browserAction on or off*/
+	chrome.runtime.sendMessage({task:"getCurrentTabUrl"}, function(response) {
+		//console.log(response.activeTabUrl);
+		let patt = new RegExp("https://www.youtube.com/watch");
+	    if(!patt.test(response.activeTabUrl))
+	    	chrome.runtime.sendMessage({task:"disableBrowserAction"});    	
+	    else 
+	    	chrome.runtime.sendMessage({task:"enableBrowserAction"});
+	});
 }
 
 
