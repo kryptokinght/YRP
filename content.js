@@ -1,9 +1,9 @@
 /*
-Whenever a youtube tab is loaded, content is loaded. It creates the player template
-but is not active. Now when the browserAction is clicked, the music player becomes
+Whenever a youtube tab is loaded, content.js is loaded.Now when the browserAction 
+is clicked, the player template is created and the music player becomes
 active(playerState = true), player_tab_id is modified. The video in the webpage is
 read and loaded in the player...... BUT, if the music player is already active in 
-another tab, the music player in the previous tab is closed and the player in the
+another tab, the music player in the other tab is closed and the player in the
 current tab becomes active.
 
 The content.js performs 3 basic functions:
@@ -31,7 +31,7 @@ console.log("YRP Content JS has loaded");
 
 
 var iframe, setTimeModal; //iframe stores the main music player
-
+var intervalId;
 var video_detail = {
 	url: "",
 	repeats: 0,
@@ -47,7 +47,7 @@ toggleBrowserAction();
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "initializeMusicPlayer") {
-		console.log("Initialzing music player");
+		//console.log("Initialzing music player");
 		initializeMusicPlayer(false);
 	}
 	return true;
@@ -60,9 +60,10 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 */
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "playerTabUpdated") {
-		console.log("player tab update refreshplayer() called");
+		//console.log("player tab update refreshplayer() called");
 		toggleBrowserAction(); //sets browserAction on or off DOESnt work
 		refreshPlayer();
+		stopRepeat();
 	}
 	else if(message.task == "loadPlayer") {
 		loadPlayer();
@@ -72,6 +73,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	}
 	else if(message.task == "closePlayer") {
 		closePlayer();
+		stopRepeat();
 	}
 });
 //---------------------------------------------------------------------------
@@ -88,7 +90,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 chrome.runtime.sendMessage({task: "checkRefreshState"}, function(response) {
 	//console.log("Checking for refresh!!");	
 	if(response.refreshState) {
-		//console.log("page refreshed loadPlayer() called")
+		stopRepeat();
 		loadPlayer();
 	}
 	else {
@@ -103,15 +105,20 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "setTimeModal"){   	
     	createTimeModal();
     }
-    else if(message.task == 'submitTimeModal'){ //when submit button is clicked
-    	console.log("Submitted Modal, Waiting to send video data to musicPlayer.js");
-    	initializeMusicPlayer(true);
+    else if(message.task == 'submitTimeModal') {
+    	console.log(message.timeData);
+    	initializeMusicPlayer(true, message.timeData);
+    	repeatVideo(message.timeData);
     	setTimeModal.parentNode.removeChild(setTimeModal);
 
     }
     else if(message.task == 'closeTimeModal'){ //when close button is clicked
-    	console.log("Closing the time modal");
+    	//console.log("Closing the time modal");
     	setTimeModal.parentNode.removeChild(setTimeModal);
+    }
+    else if(message.task == 'repeatVideo') {
+    	repeatVideo();
+    	initializeMusicPlayer(true);
     }
 });
 
@@ -124,27 +131,26 @@ function removeMusicPlayer() {
 	temp_iframe.parentNode.removeChild(temp_iframe);
 }
 
-function loadPlayer() { //not working properly
+function loadPlayer() {
 	//console.log("loadPlayer called!");
 	//creates the music player template
 	createMusicPlayer();
 	toggle();
 }
 
-function closePlayer() { //complete
+function closePlayer() {
 	//console.log("closePlayer called!");
 	removeMusicPlayer();
 }
 
-function togglePlayer() { //complete
+function togglePlayer() {
 	//console.log("togglePlayer called!");
 	toggle();
 }
 
 function refreshPlayer() {
-	console.log("refreshPlayer called!");
+	//console.log("refreshPlayer called!");
 	toggle(true, false); //force open music player
-	//open player(toggle to open)
 	initializeMusicPlayer(false);
 }
 
@@ -169,14 +175,14 @@ function getVideoData() {
 	let vid = document.getElementsByTagName('video');
 	//getting the thumbnail of the video
 	let videoid = vid[0].baseURI.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
-	let srcImage ="https://i1.ytimg.com/vi/"+videoid[1]+"/default.jpg";
+	let thumbImage ="https://i1.ytimg.com/vi/"+videoid[1]+"/default.jpg";
 
 	let video_detail = {
 		url: vid[0].baseURI,
 		repeats: 0,
 		title: title,
 		playlist: "",
-		playIcon: srcImage,
+		playIcon: thumbImage,
 		starred: false,
 		startTime: 0,
 		endTime: vid[0].duration - 0.03
@@ -185,7 +191,7 @@ function getVideoData() {
 	return video_detail;
 }
 
-function initializeMusicPlayer(save = false) {
+function initializeMusicPlayer(save = false, timeData = {}) {
 	/*
 	> scrapes video off page and stores in video_detail
 	> checks wether video present in local storage and changes playerState to 1 or 2
@@ -195,17 +201,21 @@ function initializeMusicPlayer(save = false) {
 	let taskState = "videoData";
 	if(save)
 		taskState = "videoDataSave";
-	let video_detail = getVideoData(); 
+	
+	let video_detail = getVideoData();
+	if(Object.keys(timeData).length) {
+		video_detail.startTime = timeData.startTime;
+		video_detail.endTime = timeData.endTime;
+	} 
 	//console.log(video_detail);
 	chrome.runtime.sendMessage({task: "searchUrlInStorage", url: video_detail.url}, function(response) {
-		console.log(response);
 		if(response.playerState == 2) {
 			chrome.runtime.sendMessage({
 				task: taskState, 
 				video_detail, 
 				playerState: 2
 			}, function(response){
-				console.log("Video information sent to musicPlayer.js");
+				//console.log("Video information sent to musicPlayer.js");
 			});		
 		}
 		else {
@@ -215,7 +225,7 @@ function initializeMusicPlayer(save = false) {
 				video_detail, 
 				playerState: 1
 			}, function(response){
-				console.log("Video information sent to musicPlayer.js");
+				//console.log("Video information sent to musicPlayer.js");
 			});	
 		}
 
@@ -223,8 +233,8 @@ function initializeMusicPlayer(save = false) {
 	});
 }
 
-//creates the music player in the right side of window
 function createMusicPlayer() {
+	/*creates the music player in the right side of window*/
 	iframe = document.createElement('iframe');
 	iframe.id = "yrp111";
 	iframe.style.height = "100%";
@@ -265,6 +275,30 @@ function toggleBrowserAction() {
 	    else 
 	    	chrome.runtime.sendMessage({task:"enableBrowserAction"});
 	});
+}
+
+function repeatVideo(timeData = {}) {
+	let vid = document.getElementsByTagName('video');
+	let startTime = 0, endTime = vid[0].duration - 0.03;
+	if(Object.keys(timeData).length) {
+		startTime = timeData.startTime;
+		endTime = timeData.endTime;
+	}
+	intervalId = setInterval(function() {
+		checkVideo(startTime, endTime, vid);
+	}, 300);
+}
+
+function checkVideo(startTime, endTime, vid) {
+	if(vid[0].currentTime < startTime)
+		vid[0].currentTime = startTime;
+	else if(vid[0].currentTime > endTime)
+		vid[0].currentTime = startTime;
+}
+
+function stopRepeat() {
+	console.log("Looping stopped!");
+	clearInterval(intervalId);
 }
 
 

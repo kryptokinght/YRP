@@ -10,9 +10,6 @@ There are 2 player states:
 	clicked, player state 2 is loaded.
 	CONTAINS buttons repeat and setTime.
 2. (saved state) This state is for videos that already present in localStorage. 
-
-Get URL of webpage from 
-Identify the video in the webpage, get title, thumbnail, 
 */
 
 console.log("musicPlayer.js has loaded!!");
@@ -22,21 +19,11 @@ var video_detail = {
 	repeats: 0,
 	title: "",
 	playlist: "",
+	playIcon: "",
 	starred: false,
 	startTime: 0,
 	endTime: 0
 };
-
-
-/*
-//scrap the video element from webpage
-var vid = document.getElementsByTagName('video');
-var vid_length = vid[0].duration;
-
-
-video_detail.url = 
-video_detail.title = document.querySelector('h1.title').innerText;*/
-
 
 /*
 Listener to load a particular state of the music player(state1 or state2).
@@ -50,14 +37,45 @@ message = {
 //chrome.runtime.onMessage.addEventListener(function())----------
 
 
+
+/*--------------LISTENERS for buttons in playerState1----------------------------*/
 // sets listener to openModal button for click action
 document.addEventListener("DOMContentLoaded", function() {
-  document.getElementById("openModal").addEventListener("click", popupModal);
+  document.getElementById("openTimeModal").addEventListener("click", popupModal);
+  document.getElementById("repeat").addEventListener("click", repeatVideo);
 });
 
+/************message listeners for videoData and videoDataSave**********/
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
+	if(message.task == 'videoData'){
+		console.log("Video data received from <content.js>");
+		initializePlayer(message.video_detail, message.playerState);
+		
+		/*console.log(message.video_detail.starred);
+		console.log(message.video_detail.url);
+		console.log(message.video_detail.title);
+		console.log(message.video_detail.playIcon);
+		console.log(message.video_detail.startTime);
+		console.log(message.video_detail.endTime);*/
+	}
+	else if(message.task == 'videoDataSave'){
+		console.log("Video data save LS received from <content.js>");
+		chrome.runtime.sendMessage({task:"check", ps:message.playerState}, function(response) {
+			console.log(response); //save data here into localStorage
+			return true;
+		});
+	}
+});
+
+//load the music player with initial data(a roundabout process (**given below)
+chrome.runtime.sendMessage({task:"getPlayerTabId"}, function(response) {
+	chrome.tabs.sendMessage(response.playerTabId, {task:"initializeMusicPlayer"});
+});
+
+/*-----------------function definitions------------------*/
 function popupModal() {
 	/*Opens setTimeForm.html*/
-	console.log("openTimeModal button clicked!");
+	//console.log("openTimeModal button clicked!");
 	//get the player.tab_id and send 'setTimeModal' message to content.js
 	chrome.runtime.sendMessage({task:"getPlayerTabId"}, function(response) {
 		chrome.tabs.sendMessage(response.playerTabId, {task: "setTimeModal"})
@@ -65,32 +83,25 @@ function popupModal() {
 	});
 }
 
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-	if(message.task == 'videoData'){
-		console.log("Video data received from <content.js>");
-		chrome.runtime.sendMessage({task:"check", ps:message.playerState}, function(response) {
-			console.log(response);
-			return true;
-		});
-		console.log(message.video_detail.starred);
-		console.log(message.video_detail.url);
-		console.log(message.video_detail.title);
-		console.log(message.video_detail.playIcon);
-		console.log(message.video_detail.startTime);
-		console.log(message.video_detail.endTime);
-	}
-});
+function repeatVideo() {
+	chrome.runtime.sendMessage({task:"getPlayerTabId"}, function(response) {
+		chrome.tabs.sendMessage(response.playerTabId, {task: "repeatVideo"})
+		return true;
+	});
+}
 
-
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-	if(message.task == 'videoDataSave'){
-		console.log("Video data save LS received from <content.js>");
-		chrome.runtime.sendMessage({task:"check", ps:message.playerState}, function(response) {
-			console.log(response);
-			return true;
-		});
+function initializePlayer(videoData, playerState) {
+	if(playerState == 1) {
+		/*Check whether state of player is 1 or 2. if 2 convert to 1*/
+		let title = document.getElementById("vid_title");	
+		let image = document.getElementById("vid_img");
+		image.src = videoData.playIcon;
+		title.innerHTML = videoData.title;
 	}
-});
+	else if(playerState == 2) {
+
+	}
+}
 
 /*
 
@@ -101,7 +112,10 @@ console.log(src1);
 var img1 = document.getElementById("mimg");
 img1.src = src1;
 */
-console.log("calling");
-chrome.runtime.sendMessage({task:"getPlayerTabId"}, function(response) {
-	chrome.tabs.sendMessage(response.playerTabId, {task:"initializeMusicPlayer"});
-});
+
+/*
+**roundabout process in the sense that message is sent to content.js which
+sends a message back with the videoData to musicPlayer.js and then the player is
+initialized
+*/
+
