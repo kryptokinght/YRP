@@ -86,14 +86,14 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 
 		//Render the basic music Player
 		if (message.playerState == 1) {
-			console.log("yes you are here");
+			console.log("yes you are here in playerState 1");
 			document.getElementById('mimg').src = message.video_detail.playIcon;
 			document.getElementById('txt').innerText = message.video_detail.title;
 		}
 
 		//Render the music Player stored in localStorage
 		else if (message.playerState == 2){
-
+			console.log("yes you are here in playerState 2");
 		}
 	}
 });

@@ -161,7 +161,7 @@ function toggle(forceOpen = false) {
 }
 
 function getVideoData() {
-	let title = document.querySelector('title').innerText;
+	let title = document.querySelector('h1').innerText;
 	let vid = document.getElementsByTagName('video');
 	//getting the thumbnail of the video
 	let videoid = vid[0].baseURI.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);

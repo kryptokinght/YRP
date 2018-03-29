@@ -184,6 +184,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "searchUrlInStorage") {
+		console.log("searchUrlInStorage() performing");
 		let found = -1;
 		for(let i = 0; i < recents.length; i++) {
 			if(recents[i].url == message.url) {
