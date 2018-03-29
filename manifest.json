@@ -5,6 +5,7 @@
     "content_scripts" : [
       {
         "matches" : [
+          "http://www.youtube.com/*",
           "https://www.youtube.com/*"
         ],
         "js" : ["jquery-3.3.1.min.js","content.js"]

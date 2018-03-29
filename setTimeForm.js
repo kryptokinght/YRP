@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
 //***********function definitions****************
 function submitModal() {
 /*function to submit the modal with values*/
-  console.log("Clicked button to open modal");
+  console.log("Clicked button to submit modal");
     chrome.tabs.query({currentWindow: true, active: true}, function (tabs){ 
 
     	//console.log("Opening Modal");
