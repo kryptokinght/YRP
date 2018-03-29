@@ -86,15 +86,14 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	RUNS ONLY ONCE when content.js loads
 */
 chrome.runtime.sendMessage({task: "checkRefreshState"}, function(response) {
-	console.log("Checking for refresh!!");
-	console.log(response);	
+	//console.log("Checking for refresh!!");	
 	if(response.refreshState) {
-		console.log("page refreshed loadPlayer() called")
+		//console.log("page refreshed loadPlayer() called")
 		loadPlayer();
 	}
 	else {
-		console.log("Music player already active in another tab or this tab");
-		console.log("Click on browserAction to activate here");
+		//console.log("Music player already active in another tab or this tab");
+		//console.log("Click on browserAction to activate here");
 	}
 });
 //---------------------------------------------------------------------------
@@ -126,33 +125,37 @@ function removeMusicPlayer() {
 }
 
 function loadPlayer() { //not working properly
-	console.log("loadPlayer called!");
-	//creates the music player and loads the initial data
+	//console.log("loadPlayer called!");
+	//creates the music player template
 	createMusicPlayer();
 	toggle();
 }
 
 function closePlayer() { //complete
-	console.log("closePlayer called!");
+	//console.log("closePlayer called!");
 	removeMusicPlayer();
 }
 
 function togglePlayer() { //complete
-	console.log("togglePlayer called!");
+	//console.log("togglePlayer called!");
 	toggle();
 }
 
 function refreshPlayer() {
 	console.log("refreshPlayer called!");
-	toggle(true); //force open music player
+	toggle(true, false); //force open music player
 	//open player(toggle to open)
-	initializeMusicPlayer(true);
+	initializeMusicPlayer(false);
 }
 
-function toggle(forceOpen = false) {
+function toggle(forceOpen = false, forceClose = false) {
 	//toggles the music player iframe, opens and closes it.
 	if(forceOpen) {
 		iframe.style.width="300px";
+		return;
+	}
+	if(forceClose) {
+		iframe.style.width="0px";
 		return;
 	}
     if(iframe.style.width == "0px")
@@ -255,7 +258,7 @@ function createTimeModal(){
 function toggleBrowserAction() {
 	/*Toggles browserAction on or off*/
 	chrome.runtime.sendMessage({task:"getCurrentTabUrl"}, function(response) {
-		console.log(response.activeTabUrl);
+		//console.log(response.activeTabUrl);
 		let patt = new RegExp("https://www.youtube.com/watch");
 	    if(!patt.test(response.activeTabUrl))
 	    	chrome.runtime.sendMessage({task:"disableBrowserAction"});    	
