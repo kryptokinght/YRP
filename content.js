@@ -37,16 +37,18 @@ var video_detail = {
 	repeats: 0,
 	title: "",
 	playlist: "",
+	playIcon: "",
 	starred: false,
 	startTime: 0,
 	endTime: 0
 };
 
+toggleBrowserAction();
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "initializeMusicPlayer") {
 		console.log("Initialzing music player");
-		initializeMusicPlayer();
+		initializeMusicPlayer(false);
 	}
 	return true;
 });
@@ -59,6 +61,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "playerTabUpdated") {
 		console.log("player tab update refreshplayer() called");
+		toggleBrowserAction(); //sets browserAction on or off DOESnt work
 		refreshPlayer();
 	}
 	else if(message.task == "loadPlayer") {
@@ -124,8 +127,8 @@ function removeMusicPlayer() {
 
 function loadPlayer() { //not working properly
 	console.log("loadPlayer called!");
+	//creates the music player and loads the initial data
 	createMusicPlayer();
-	//check wether video in local storage or not and initialize the player
 	toggle();
 }
 
@@ -186,14 +189,16 @@ function initializeMusicPlayer(save = false) {
 	> sends message to musicPlayer.js to initialize the player containing video_detail
 	  and playerState  
 	*/
+	let taskState = "videoData";
+	if(save)
+		taskState = "videoDataSave";
 	let video_detail = getVideoData(); 
 	//console.log(video_detail);
 	chrome.runtime.sendMessage({task: "searchUrlInStorage", url: video_detail.url}, function(response) {
 		console.log(response);
 		if(response.playerState == 2) {
-			console.log(2222222222222222);
 			chrome.runtime.sendMessage({
-				task: "videoData", 
+				task: taskState, 
 				video_detail, 
 				playerState: 2
 			}, function(response){
@@ -201,10 +206,9 @@ function initializeMusicPlayer(save = false) {
 			});		
 		}
 		else {
-			console.log(1111111111);
 			//send videoData as it is
 			chrome.runtime.sendMessage({
-				task: "videoData", 
+				task: taskState, 
 				video_detail, 
 				playerState: 1
 			}, function(response){
@@ -246,6 +250,18 @@ function createTimeModal(){
 	setTimeModal.style.opacity = "0.95";
 	setTimeModal.src = chrome.extension.getURL("setTimeForm.html");
 	document.body.appendChild(setTimeModal);
+}
+
+function toggleBrowserAction() {
+	/*Toggles browserAction on or off*/
+	chrome.runtime.sendMessage({task:"getCurrentTabUrl"}, function(response) {
+		console.log(response.activeTabUrl);
+		let patt = new RegExp("https://www.youtube.com/watch");
+	    if(!patt.test(response.activeTabUrl))
+	    	chrome.runtime.sendMessage({task:"disableBrowserAction"});    	
+	    else 
+	    	chrome.runtime.sendMessage({task:"enableBrowserAction"});
+	});
 }
 
 
