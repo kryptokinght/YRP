@@ -48,6 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
 /************message listeners for videoData and videoDataSave**********/
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 	if(message.task == 'videoData'){
+		console.log(message);
 		console.log("Video data init received from <content.js>");
 		//initializes player for both state 1 and 2
 		initializePlayer(message.video_detail, message.playerState);
@@ -89,14 +90,32 @@ function repeatVideo() {
 function initializePlayer(videoData, playerState) {
 	if(playerState == 1) {
 		/*Check whether state of player is 1 or 2. if 2 convert to 1*/
+		console.log("You are in player state 1");
 		let title = document.getElementById("vid_title");	
 		let image = document.getElementById("vid_img");
+		let fav = document.getElementById("starred");
+		let repeat = document.getElementById("repeat");
+		let openTimeModal = document.getElementById("openTimeModal");
+		repeat.style.marginLeft = "50px";
+		openTimeModal.style.marginLeft = "50px"
+		fav.style.display = "none";
 		image.src = videoData.playIcon;
 		title.innerHTML = videoData.title;
 	}
 	else if(playerState == 2) {
 		//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 		//YE WALA BANA DE
+		console.log("You are in player state 2");
+		let title = document.getElementById("vid_title");	
+		let image = document.getElementById("vid_img");
+		let fav = document.getElementById("starred");
+		let repeat = document.getElementById("repeat");
+		let openTimeModal = document.getElementById("openTimeModal");
+		repeat.style.marginLeft = "20px";
+		fav.style.marginLeft = "20px";
+		openTimeModal.style.marginLeft = "20px"
+		image.src = videoData.playIcon;
+		title.innerHTML = videoData.title;	
 	}
 }
 

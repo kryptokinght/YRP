@@ -171,7 +171,7 @@ function toggle(forceOpen = false, forceClose = false) {
 }
 
 function getVideoData() {
-	let title = document.querySelector('title').innerText;
+	let title = document.querySelector('h1').innerText;
 	let vid = document.getElementsByTagName('video');
 	//getting the thumbnail of the video
 	let videoid = vid[0].baseURI.match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/);
@@ -218,6 +218,12 @@ function initializeMusicPlayer(save = false, timeData = {}) {
 			});
 		}
 		else if(response.playerState == 2) {
+			/*
+				If video present in localStorage then scrap its data and
+				stick it to music player..
+			*/
+			video_detail = response.videoData;// yeh tu galat kiya tha tu ye wala line include nhi kiya tha
+			console.log(video_detail);
 			chrome.runtime.sendMessage({
 				task: taskState, 
 				video_detail, 
@@ -292,6 +298,7 @@ function repeatVideo(timeData = {}) {
 		startTime = timeData.startTime;
 		endTime = timeData.endTime;
 	}
+	console.log("Repeating video");
 	intervalId = setInterval(function() {
 		checkVideo(startTime, endTime, vid);
 	}, 300);
