@@ -27,6 +27,8 @@ var video_detail = {
 
 var player1 = document.getElementById("playerState1"),
 	player2 = document.getElementById("playerState2");
+setRecentsList();
+setStarredList();
 
 /*
 Listener to load a particular state of the music player(state1 or state2).
@@ -101,10 +103,14 @@ function initializePlayer(videoData, playerState) {
 		let image = document.getElementById("vid_img");
 		let repeat = document.getElementById("repeat");
 		let openTimeModal = document.getElementById("openTimeModal");
+		let recentsList = document.getElementById("recents-ul");
+		let starredList = document.getElementById("starred-ul");
 		repeat.style.marginLeft = "50px";
 		openTimeModal.style.marginLeft = "50px"
 		image.src = videoData.playIcon;
 		title.innerHTML = videoData.title;
+		setRecentsList(recentsList);
+		setStarredList(starredList);
 	}
 	else if(playerState == 2) {
 		console.log("You are in player state 2");
@@ -114,10 +120,14 @@ function initializePlayer(videoData, playerState) {
 		let image2 = document.getElementById("vid_img2");
 		let fav = document.getElementById("starred");
 		let openTimeModal2 = document.getElementById("openTimeModal2");
+		let recentsList = document.getElementById("recents-ul");
+		let starredList = document.getElementById("starred-ul");
 		fav.style.marginLeft = "20px";
 		openTimeModal2.style.marginLeft = "20px"
 		image2.src = videoData.playIcon;
 		title2.innerHTML = videoData.title;	
+		setRecentsList(recentsList);
+		setStarredList(starredList);
 	}
 }
 
@@ -133,5 +143,23 @@ function starred() {
 			//change it back to normal
 			console.log("Starred:" + response.starred);
 		}
+	});
+}
+
+function setRecentsList(selector) {
+	chrome.runtime.sendMessage({task:"getRecents"}, function(response) {
+		for(let i = 0; i < response.recents.length; i++) {
+			console.log(response.recents[i].title);
+			var li = document.createElement('li');
+			li.setAttribute('class','item');
+			li.innerHTML = "<a class='' title='"+response.recents[i].title+"' href='"+response.recents[i].url+"'>"+response.recents[i].title+"</a>"
+			selector.appendChild(li);
+		}
+	});
+}
+
+function setStarredList(selector) {
+	chrome.runtime.sendMessage({task:"getStarred"}, function(response) {
+
 	});
 }

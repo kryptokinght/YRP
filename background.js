@@ -264,3 +264,10 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	}
 	return true;
 });
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	if(message.task == "getRecents")
+		sendResponse({recents: recents});
+	else if(message.task == "getStarred")
+		sendResponse({starred: starred});
+});
