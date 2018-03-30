@@ -122,10 +122,19 @@ function initializePlayer(videoData, playerState) {
 		let openTimeModal2 = document.getElementById("openTimeModal2");
 		let recentsList = document.getElementById("recents-ul");
 		let starredList = document.getElementById("starred-ul");
-		fav.style.marginLeft = "20px";
-		openTimeModal2.style.marginLeft = "20px"
+		let setStar = document.getElementById("setStar");
+		let addToPlaylist = document.getElementById("addToPlaylist");
+		fav.style.marginLeft = "10px";
+		openTimeModal2.style.marginLeft = "10px"
+		addToPlaylist.style.marginLeft = "10px";
 		image2.src = videoData.playIcon;
-		title2.innerHTML = videoData.title;	
+		title2.innerHTML = videoData.title;
+		console.log(videoData.starred);	
+		if(videoData.starred){
+			setStar.src = "icons/starred.png";
+		} else {
+			setStar.src = "icons/unstarred.png";
+		}
 		setRecentsList(recentsList);
 		setStarredList(starredList);
 	}
@@ -135,13 +144,16 @@ function starred() {
 	console.log("Starred button clicked");
 	chrome.runtime.sendMessage({task:"toggleStarred"}, function(response) {
 		let fav = document.getElementById("starred");
+		let setStar = document.getElementById("setStar");
 		if(response.starred) { 
 			//changed starred button color to golden
 			console.log("Starred:" + response.starred);
+			setStar.src = "icons/starred.png";
 		}
 		else {
 			//change it back to normal
 			console.log("Starred:" + response.starred);
+			setStar.src = "icons/unstarred.png";
 		}
 	});
 }
