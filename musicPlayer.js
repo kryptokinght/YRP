@@ -95,8 +95,7 @@ function initializePlayer(videoData, playerState) {
 	if(playerState == 1) {
 		player1.style.display = "";
 		player2.style.display = "none";
-		console.log(videoData);
-		/*Check whether state of player is 1 or 2. if 2 convert to 1*/
+		//console.log(videoData);
 		console.log("You are in player state 1");
 		let title = document.getElementById("vid_title");	
 		let image = document.getElementById("vid_img");
@@ -122,9 +121,17 @@ function initializePlayer(videoData, playerState) {
 	}
 }
 
-
-/*
-**roundabout process in the sense that message is sent to content.js which
-sends a message back with the videoData to musicPlayer.js and then the player is
-initialized
-*/
+function starred() {
+	console.log("Starred button clicked");
+	chrome.runtime.sendMessage({task:"toggleStarred"}, function(response) {
+		let fav = document.getElementById("starred");
+		if(response.starred) { 
+			//changed starred button color to golden
+			console.log("Starred:" + response.starred);
+		}
+		else {
+			//change it back to normal
+			console.log("Starred:" + response.starred);
+		}
+	});
+}

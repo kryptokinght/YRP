@@ -241,6 +241,7 @@ function saveData() {
 		console.log("Recents Value stored");
 	});
 }
+
 function searchUrl(url) {
 	let found = -1;
 	for(let i = 0; i < recents.length; i++) {
@@ -251,3 +252,15 @@ function searchUrl(url) {
 	}
 	return found;
 }
+
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+	if(message.task == "toggleStarred") {
+		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+			let found = searchUrl(tabs[0].url);
+			recents[found].starred = !(recents[found].starred);
+			saveData();
+			sendResponse({starred: recents[found].starred});	
+		});
+	}
+	return true;
+});
