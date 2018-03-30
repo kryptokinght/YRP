@@ -57,6 +57,7 @@ chrome.storage.local.get(["yrps"], function(result) {
 		starred = result["yrps"]["starred"];
 		console.log("recents");
 		console.log(recents);
+		console.log(starred);
 	}
 });
 
@@ -269,5 +270,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "getRecents")
 		sendResponse({recents: recents});
 	else if(message.task == "getStarred")
+		console.log("starred playlist");
 		sendResponse({starred: starred});
 });

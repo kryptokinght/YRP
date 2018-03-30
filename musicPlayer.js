@@ -105,8 +105,8 @@ function initializePlayer(videoData, playerState) {
 		let openTimeModal = document.getElementById("openTimeModal");
 		let recentsList = document.getElementById("recents-ul");
 		let starredList = document.getElementById("starred-ul");
-		repeat.style.marginLeft = "50px";
-		openTimeModal.style.marginLeft = "50px"
+		repeat.style.marginLeft = "40px";
+		openTimeModal.style.marginLeft = "30px"
 		image.src = videoData.playIcon;
 		title.innerHTML = videoData.title;
 		setRecentsList(recentsList);
@@ -160,7 +160,7 @@ function starred() {
 
 function setRecentsList(selector) {
 	chrome.runtime.sendMessage({task:"getRecents"}, function(response) {
-		for(let i = 0; i < response.recents.length; i++) {
+		for(let i = response.recents.length-1; i >= 0 ; i--) {
 			console.log(response.recents[i].title);
 			var li = document.createElement('li');
 			li.setAttribute('class','item');
@@ -171,7 +171,9 @@ function setRecentsList(selector) {
 }
 
 function setStarredList(selector) {
-	chrome.runtime.sendMessage({task:"getStarred"}, function(response) {
+	
+}
 
-	});
+function addToPlaylist() {
+	console.log("Clicked butto to add to playlist");
 }

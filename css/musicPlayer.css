@@ -7,3 +7,13 @@
 	float: right;
 	color: darkolivegreen;
 }
+
+#recents-list{
+	height: 300px;
+	overflow: scroll;
+}
+
+#starred-list{
+	height: 300px;
+	overflow: scroll;
+}
