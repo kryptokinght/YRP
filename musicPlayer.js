@@ -105,8 +105,8 @@ function initializePlayer(videoData, playerState) {
 		let openTimeModal = document.getElementById("openTimeModal");
 		let recentsList = document.getElementById("recents-ul");
 		let starredList = document.getElementById("starred-ul");
-		repeat.style.marginLeft = "50px";
-		openTimeModal.style.marginLeft = "50px"
+		repeat.style.marginLeft = "40px";
+		openTimeModal.style.marginLeft = "30px"
 		image.src = videoData.playIcon;
 		title.innerHTML = videoData.title;
 		setRecentsList(recentsList);
@@ -171,7 +171,5 @@ function setRecentsList(selector) {
 }
 
 function setStarredList(selector) {
-	chrome.runtime.sendMessage({task:"getStarred"}, function(response) {
-
-	});
+	
 }
