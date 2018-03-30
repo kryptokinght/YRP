@@ -122,12 +122,19 @@ function initializePlayer(videoData, playerState) {
 		let openTimeModal2 = document.getElementById("openTimeModal2");
 		let recentsList = document.getElementById("recents-ul");
 		let starredList = document.getElementById("starred-ul");
+		let setStar = document.getElementById("setStar");
 		let addToPlaylist = document.getElementById("addToPlaylist");
 		fav.style.marginLeft = "10px";
 		openTimeModal2.style.marginLeft = "10px"
 		addToPlaylist.style.marginLeft = "10px";
 		image2.src = videoData.playIcon;
-		title2.innerHTML = videoData.title;	
+		title2.innerHTML = videoData.title;
+		console.log(videoData.starred);	
+		if(videoData.starred){
+			setStar.src = "icons/starred.png";
+		} else {
+			setStar.src = "icons/unstarred.png";
+		}
 		setRecentsList(recentsList);
 		setStarredList(starredList);
 	}
