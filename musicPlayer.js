@@ -25,6 +25,9 @@ var video_detail = {
 	endTime: 0
 };
 
+var player1 = document.getElementById("playerState1"),
+	player2 = document.getElementById("playerState2");
+
 /*
 Listener to load a particular state of the music player(state1 or state2).
 The message will contain 
@@ -42,13 +45,16 @@ message = {
 // sets listener to openModal button for click action
 document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("openTimeModal").addEventListener("click", popupModal);
+  document.getElementById("openTimeModal2").addEventListener("click", popupModal);
   document.getElementById("repeat").addEventListener("click", repeatVideo);
+  document.getElementById("addToPlaylist").addEventListener("click", addToPlaylist);
+  document.getElementById("starred").addEventListener("click", starred);
 });
 
 /************message listeners for videoData and videoDataSave**********/
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 	if(message.task == 'videoData'){
-		console.log(message);
+		//console.log(message);
 		console.log("Video data init received from <content.js>");
 		//initializes player for both state 1 and 2
 		initializePlayer(message.video_detail, message.playerState);
@@ -60,7 +66,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
 			task: "setLocalStorageRecents", 
 			video_detail: message.video_detail
 		});
-		initializePlayer(message.video_detail, message.playerState);
+		initializePlayer(message.video_detail, 2);
 	}
 });
 
@@ -76,46 +82,43 @@ function popupModal() {
 	//get the player.tab_id and send 'setTimeModal' message to content.js
 	chrome.runtime.sendMessage({task:"getPlayerTabId"}, function(response) {
 		chrome.tabs.sendMessage(response.playerTabId, {task: "setTimeModal"})
-		return true;
 	});
 }
 
 function repeatVideo() {
 	chrome.runtime.sendMessage({task:"getPlayerTabId"}, function(response) {
 		chrome.tabs.sendMessage(response.playerTabId, {task: "repeatVideo"})
-		return true;
 	});
 }
 
 function initializePlayer(videoData, playerState) {
 	if(playerState == 1) {
+		player1.style.display = "";
+		player2.style.display = "none";
+		console.log(videoData);
 		/*Check whether state of player is 1 or 2. if 2 convert to 1*/
 		console.log("You are in player state 1");
 		let title = document.getElementById("vid_title");	
 		let image = document.getElementById("vid_img");
-		let fav = document.getElementById("starred");
 		let repeat = document.getElementById("repeat");
 		let openTimeModal = document.getElementById("openTimeModal");
 		repeat.style.marginLeft = "50px";
 		openTimeModal.style.marginLeft = "50px"
-		fav.style.display = "none";
 		image.src = videoData.playIcon;
 		title.innerHTML = videoData.title;
 	}
 	else if(playerState == 2) {
-		//XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-		//YE WALA BANA DE
 		console.log("You are in player state 2");
-		let title = document.getElementById("vid_title");	
-		let image = document.getElementById("vid_img");
+		player1.style.display = "none";
+		player2.style.display = "";
+		let title2 = document.getElementById("vid_title2");	
+		let image2 = document.getElementById("vid_img2");
 		let fav = document.getElementById("starred");
-		let repeat = document.getElementById("repeat");
-		let openTimeModal = document.getElementById("openTimeModal");
-		repeat.style.marginLeft = "20px";
+		let openTimeModal2 = document.getElementById("openTimeModal2");
 		fav.style.marginLeft = "20px";
-		openTimeModal.style.marginLeft = "20px"
-		image.src = videoData.playIcon;
-		title.innerHTML = videoData.title;	
+		openTimeModal2.style.marginLeft = "20px"
+		image2.src = videoData.playIcon;
+		title2.innerHTML = videoData.title;	
 	}
 }
 

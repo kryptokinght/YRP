@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,13 +9,13 @@
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> 
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="jquery-3.3.1.min.js"></script>
-  <script src="css/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
 
 <body>
-    <div class="container">
+    <!-- Player State 1 -->
+    <div class="container" id="playerState1">
+        <h3>Player State 1</h3>
         <div class="green">
             <div class="thumbnail">
                 <img id="vid_img" />
@@ -25,12 +26,35 @@
                 <br />
                 <div class="buttons">
                     <button id="repeat" class="btn btn-lg glyphicon glyphicon-repeat"></button>
-                    <button id="starred" class="btn btn-lg glyphicon glyphicon-star-empty"></button>
                     <button id="openTimeModal" class="btn btn-lg glyphicon glyphicon-time"></button>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Player State 2 -->
+    <div class="container" id="playerState2">
+        <h2>Player state 2</h2>
+        <div class="green">
+            <div class="thumbnail">
+                <img id="vid_img2" />
+                <div class="caption">
+                    <h4 style="text-align: center;">NOW PLAYING</h4>
+                    <span id="vid_title2"></span>
+                </div>
+                <br />
+                <div class="buttons">
+                    <div id="no_of_repeats">
+                        <strong>23 repeats</strong>
+                    </div>
+                    <button id="starred" class="btn btn-lg glyphicon glyphicon-star-empty"></button>
+                    <button id="openTimeModal2" class="btn btn-lg glyphicon glyphicon-time"></button>
+                    <button id="addToPlaylist" class="btn btn-lg"><img src="https://image.flaticon.com/icons/png/128/118/118322.png" style="height:22px;width:18px;"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="text/javascript" src="jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="css/bootstrap.min.js"></script> 
     <script src="musicPlayer.js"></script>

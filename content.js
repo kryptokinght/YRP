@@ -209,7 +209,7 @@ function initializeMusicPlayer(save = false, timeData = {}) {
 	} 
 	//console.log(video_detail);
 	chrome.runtime.sendMessage({task: "searchUrlInStorage", url: video_detail.url}, function(response) {
-		if(save && response.playerState == 2) {
+		if(save && response.playerState == 2) { //special condition
 			/*Data already present in localStorage, just change timeData*/
 			chrome.runtime.sendMessage({
 				task:"videoDataModify",
@@ -223,6 +223,7 @@ function initializeMusicPlayer(save = false, timeData = {}) {
 				stick it to music player..
 			*/
 			video_detail = response.videoData;// yeh tu galat kiya tha tu ye wala line include nhi kiya tha
+			repeatVideo({startTime:video_detail.startTime, endTime:video_detail.endTime});
 			console.log(video_detail);
 			chrome.runtime.sendMessage({
 				task: taskState, 
