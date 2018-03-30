@@ -173,3 +173,7 @@ function setRecentsList(selector) {
 function setStarredList(selector) {
 	
 }
+
+function addToPlaylist() {
+	console.log("Clicked butto to add to playlist");
+}

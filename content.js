@@ -113,7 +113,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
     }
     else if(message.task == 'closeTimeModal'){ //when close button is clicked
-    	//console.log("Closing the time modal");
+    	console.log("Closing the time modal");
     	setTimeModal.parentNode.removeChild(setTimeModal);
     }
     else if(message.task == 'repeatVideo') {
