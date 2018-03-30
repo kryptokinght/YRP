@@ -160,7 +160,7 @@ function starred() {
 
 function setRecentsList(selector) {
 	chrome.runtime.sendMessage({task:"getRecents"}, function(response) {
-		for(let i = 0; i < response.recents.length; i++) {
+		for(let i = response.recents.length-1; i >= 0 ; i--) {
 			console.log(response.recents[i].title);
 			var li = document.createElement('li');
 			li.setAttribute('class','item');
