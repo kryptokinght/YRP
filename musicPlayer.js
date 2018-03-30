@@ -137,13 +137,16 @@ function starred() {
 	console.log("Starred button clicked");
 	chrome.runtime.sendMessage({task:"toggleStarred"}, function(response) {
 		let fav = document.getElementById("starred");
+		let setStar = document.getElementById("setStar");
 		if(response.starred) { 
 			//changed starred button color to golden
 			console.log("Starred:" + response.starred);
+			setStar.src = "icons/starred.png";
 		}
 		else {
 			//change it back to normal
 			console.log("Starred:" + response.starred);
+			setStar.src = "icons/unstarred.png";
 		}
 	});
 }
