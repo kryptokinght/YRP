@@ -175,5 +175,5 @@ function setStarredList(selector) {
 }
 
 function addToPlaylist() {
-	console.log("Clicked butto to add to playlist");
+	console.log("Clicked button to add to playlist");
 }

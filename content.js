@@ -283,7 +283,7 @@ function createTimeModal(){
 function toggleBrowserAction() {
 	/*Toggles browserAction on or off*/
 	chrome.runtime.sendMessage({task:"getCurrentTabUrl"}, function(response) {
-		//console.log(response.activeTabUrl);
+		console.log(response.activeTabUrl);
 		let patt = new RegExp("https://www.youtube.com/watch");
 	    if(!patt.test(response.activeTabUrl))
 	    	chrome.runtime.sendMessage({task:"disableBrowserAction"});    	
