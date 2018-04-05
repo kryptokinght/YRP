@@ -10,10 +10,10 @@
 
 #recents-list{
 	height: 300px;
-	overflow: scroll;
+	overflow: auto;
 }
 
 #starred-list{
 	height: 300px;
-	overflow: scroll;
+	overflow: auto;
 }

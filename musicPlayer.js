@@ -143,17 +143,20 @@ function initializePlayer(videoData, playerState) {
 function starred() {
 	console.log("Starred button clicked");
 	chrome.runtime.sendMessage({task:"toggleStarred"}, function(response) {
-		let fav = document.getElementById("starred");
+		console.log("Message sent!!");
 		let setStar = document.getElementById("setStar");
-		if(response.starred) { 
+		let starSrc = setStar.src;
+		//console.log(starSrc);
+		//console.log(response.starred);
+		if(starSrc == "chrome-extension://llojofglcglejafkilafoekhpmfedenh/icons/starred.png") { 
 			//changed starred button color to golden
-			console.log("Starred:" + response.starred);
-			setStar.src = "icons/starred.png";
+			//console.log("StarredYes:" + response.starred);
+			setStar.src = "icons/unstarred.png";
 		}
 		else {
 			//change it back to normal
-			console.log("Starred:" + response.starred);
-			setStar.src = "icons/unstarred.png";
+			//console.log("StarredNo:" + response.starred);
+			setStar.src = "icons/starred.png";
 		}
 	});
 }
@@ -175,5 +178,5 @@ function setStarredList(selector) {
 }
 
 function addToPlaylist() {
-	console.log("Clicked butto to add to playlist");
+	console.log("Clicked button to add to playlist");
 }
