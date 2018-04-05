@@ -55,7 +55,6 @@ chrome.storage.local.get(["yrps"], function(result) {
 		recents = result["yrps"]["recents"];
 		playlists = result["yrps"]["playlists"];
 		starred = result["yrps"]["starred"];
-		console.log("recents");
 		console.log(recents);
 		console.log(starred);
 	}
@@ -258,9 +257,15 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 	if(message.task == "toggleStarred") {
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 			let found = searchUrl(tabs[0].url);
+			console.log(found);
 			recents[found].starred = !(recents[found].starred);
+			console.log(recents[found].starred);
+			var starredValue = recents[found].starred;
+			sendResponse({
+				starred : starredValue
+			});
 			saveData();
-			sendResponse({starred: recents[found].starred});	
+			console.log("BACK");
 		});
 	}
 	return true;
