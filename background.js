@@ -23,6 +23,7 @@ var player = {
 	tab_id: 0,
 	active_url: ""
 };
+
 var video_detail = {
 	url: "",
 	repeats: 0,
