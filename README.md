@@ -32,3 +32,7 @@ You can get around this by running it on a server - there are various ways to do
 ### Webpack-React-Babel Config setup
 
 https://www.valentinog.com/blog/react-webpack-babel/
+
+## Adding CSS to webpack config
+
+https://github.com/webpack-contrib/css-loader
