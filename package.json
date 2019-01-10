@@ -11,8 +11,8 @@
     "compress-keygen": "crx keygen",
     "build-prod": "webpack --mode production",
     "build-dev": "webpack --mode development",
-    "clean": "rimraf build/ dev/ *.zip *.crx",
-    "lint": "eslint src/**/*.js src/**/*.jsx test/**/*.js chrome/**/*.js config/**/*.js",
+    "clean": "rimraf build/ dev/ dist/ *.zip *.crx",
+    "lint": "eslint ./ ",
     "lint:fix": "eslint ./ --fix"
   },
   "husky": {
@@ -44,11 +44,6 @@
     "babel-loader": "^8.0.5",
     "css-loader": "^2.1.0",
     "eslint": "^5.12.0",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-config-prettier": "^3.3.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.3",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
