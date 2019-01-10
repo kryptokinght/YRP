@@ -10,7 +10,22 @@ const paths = require('./paths');
 const useTypeScript = fs.existsSync(paths.appTsConfig);
 
 module.exports = function (webpackEnv) {
-    const isEnvDevelopment = webpackEnv === 'development';
-    const isEnvProduction = webpackEnv === 'production';
+  const isEnvDevelopment = webpackEnv === 'development';
+  const isEnvProduction = webpackEnv === 'production';
+  return {
+    mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
+    // Stop compilation early in production
+    bail: isEnvProduction, // fail out on the first error
+    devtool: isEnvProduction // generate sourcemaps
+      ? shouldUseSourceMap
+        ? 'source-map'
+        : false
+      : isEnvDevelopment && 'cheap-module-source-map',
+    entry: [
+      isEnvDevelopment &&
+            require.resolve('react-dev-utils/webpackHotDevClient'),
+      paths.appIndexJs,
+    ].filter(Boolean),
+  };
 
 };
