@@ -16,10 +16,10 @@ const webpackConfig = webpackConfigFactory('development');
 const compiler = webpack(webpackConfig);
 const serverConfig = createDevServerConfig();
 const devServer = new WebpackDevServer(compiler, serverConfig);
-devServer.listen(3001, 'localhost', (err) => {
+devServer.listen(3000, 'localhost', (err) => {
   if (err) {
     return console.log(err);
   }
   console.log(chalk.cyan('Starting the development server...\n'));
-  console.log(chalk.cyan('Open in localhost:3001'));
+  console.log(chalk.cyan('Open in localhost:3000'));
 });
