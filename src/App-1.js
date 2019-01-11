@@ -7,7 +7,7 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <p>
-            Edit <code>src/App.js</code> and save to reload.
+                        Edit <code>src/App.js</code> and save to reload.
           </p>
           <a
             className="App-link"
@@ -15,9 +15,9 @@ class App extends Component {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Learn React
+                        Learn React
           </a>
-          <h1>APP</h1>
+          <h1>APP-1</h1>
         </header>
       </div>
     );
