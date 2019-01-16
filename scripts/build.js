@@ -40,7 +40,7 @@ const WARN_AFTER_CHUNK_GZIP_SIZE = 1024 * 1024;
 const isInteractive = process.stdout.isTTY;
 
 // Warn and crash if required files are missing
-if (!checkRequiredFiles([paths.appHtml, paths.appIndexJs])) {
+if (!checkRequiredFiles([paths.appHtml])) {
   process.exit(1);
 }
 
@@ -56,16 +56,16 @@ const config = configFactory('production');
 const { checkBrowsers } = require('react-dev-utils/browsersHelper');
 checkBrowsers(paths.appPath, isInteractive)
   .then(() => {
-    // First, read the current file sizes in build directory.
+    // First, read the current file sizes in Extension directory.
     // This lets us display how much they changed later.
-    return measureFileSizesBeforeBuild(paths.appBuild);
+    return measureFileSizesBeforeBuild(paths.appExtension);
   })
   .then(previousFileSizes => {
     // Remove all content but keep the directory so that
     // if you're in it, you don't end up in Trash
-    fs.emptyDirSync(paths.appBuild);
+    fs.emptyDirSync(paths.appExtension);
     // Merge with the public folder
-    copyPublicFolder();
+    // copyPublicFolder();
     // Start the webpack build
     return build(previousFileSizes);
   })
@@ -76,13 +76,13 @@ checkBrowsers(paths.appPath, isInteractive)
         console.log(warnings.join('\n\n'));
         console.log(
           '\nSearch for the ' +
-            chalk.underline(chalk.yellow('keywords')) +
-            ' to learn more about each warning.'
+          chalk.underline(chalk.yellow('keywords')) +
+          ' to learn more about each warning.'
         );
         console.log(
           'To ignore, add ' +
-            chalk.cyan('// eslint-disable-next-line') +
-            ' to the line before.\n'
+          chalk.cyan('// eslint-disable-next-line') +
+          ' to the line before.\n'
         );
       } else {
         console.log(chalk.green('Compiled successfully.\n'));
@@ -92,7 +92,7 @@ checkBrowsers(paths.appPath, isInteractive)
       printFileSizesAfterBuild(
         stats,
         previousFileSizes,
-        paths.appBuild,
+        paths.appExtension,
         WARN_AFTER_BUNDLE_GZIP_SIZE,
         WARN_AFTER_CHUNK_GZIP_SIZE
       );
@@ -101,7 +101,7 @@ checkBrowsers(paths.appPath, isInteractive)
       const appPackage = require(paths.appPackageJson);
       const publicUrl = paths.publicUrl;
       const publicPath = config.output.publicPath;
-      const buildFolder = path.relative(process.cwd(), paths.appBuild);
+      const buildFolder = path.relative(process.cwd(), paths.appExtension);
       printHostingInstructions(
         appPackage,
         publicUrl,
@@ -161,7 +161,7 @@ function build(previousFileSizes) {
         console.log(
           chalk.yellow(
             '\nTreating warnings as errors because process.env.CI = true.\n' +
-              'Most CI servers set it automatically.\n'
+            'Most CI servers set it automatically.\n'
           )
         );
         return reject(new Error(messages.warnings.join('\n\n')));
@@ -174,7 +174,7 @@ function build(previousFileSizes) {
       };
       if (writeStatsJson) {
         return bfj
-          .write(paths.appBuild + '/bundle-stats.json', stats.toJson())
+          .write(paths.appExtension + '/bundle-stats.json', stats.toJson())
           .then(() => resolve(resolveArgs))
           .catch(error => reject(new Error(error)));
       }
@@ -183,10 +183,11 @@ function build(previousFileSizes) {
     });
   });
 }
-
+/*
 function copyPublicFolder() {
   fs.copySync(paths.appPublic, paths.appBuild, {
     dereference: true,
     filter: file => file !== paths.appHtml,
   });
 }
+*/

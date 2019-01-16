@@ -13,7 +13,7 @@ const crx = new ChromeExtension({
   privateKey: existsKey ? fs.readFileSync(keyPath) : null
 });
 
-crx.load('build')
+crx.load('extension')
   .then(() => crx.loadContents())
   .then((archiveBuffer) => {
     fs.writeFile(`${name}.zip`, archiveBuffer);

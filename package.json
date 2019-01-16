@@ -8,11 +8,10 @@
     "start": "webpack-dev-server --open --mode development",
     "start-min": "node scripts/start.js",
     "build": "node scripts/build.js",
+    "build-min": "node scripts/build-min.js",
     "compress": "node scripts/compress",
     "compress-keygen": "crx keygen",
-    "build-prod": "webpack --mode production",
-    "build-dev": "webpack --mode development",
-    "clean": "rimraf build/ dev/ dist/ *.zip *.crx",
+    "clean": "rimraf build/ dev/ dist/  *.zip *.crx",
     "lint": "eslint ./ ",
     "lint:fix": "eslint ./ --fix"
   },
@@ -76,7 +75,6 @@
     "eslint-plugin-jsx-a11y": "6.1.2",
     "eslint-plugin-react": "7.11.1",
     "file-loader": "2.0.0",
-    "fork-ts-checker-webpack-plugin-alt": "0.4.14",
     "fs-extra": "7.0.0",
     "html-webpack-plugin": "4.0.0-alpha.2",
     "identity-obj-proxy": "3.0.0",
@@ -101,8 +99,7 @@
     "url-loader": "1.1.1",
     "webpack": "4.19.1",
     "webpack-dev-server": "3.1.14",
-    "webpack-manifest-plugin": "2.0.4",
-    "workbox-webpack-plugin": "3.6.3"
+    "webpack-manifest-plugin": "2.0.4"
   },
   "browserslist": [
     ">0.2%",
