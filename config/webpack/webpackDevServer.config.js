@@ -1,7 +1,7 @@
 /* Minimal webpack-dev-server config */
 
 const ignoredFiles = require('react-dev-utils/ignoredFiles');
-const paths = require('./paths');
+const paths = require('../paths');
 
 const host = process.env.HOST || '0.0.0.0';
 

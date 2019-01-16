@@ -7,8 +7,8 @@ const chalk = require('chalk');
 const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 
-const webpackConfigFactory = require('../config/webpack.config');
-const createDevServerConfig = require('../config/webpackDevServer.config');
+const webpackConfigFactory = require('../config/webpack/webpack.config');
+const createDevServerConfig = require('../config/webpack/webpackDevServer.config');
 
 
 const webpackConfig = webpackConfigFactory('development');

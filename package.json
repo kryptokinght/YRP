@@ -5,10 +5,8 @@
   "main": "background.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --open --mode development",
-    "start-min": "node scripts/start.js",
+    "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "build-min": "node scripts/build-min.js",
     "compress": "node scripts/compress",
     "compress-keygen": "crx keygen",
     "clean": "rimraf build/ dev/ dist/  *.zip *.crx",

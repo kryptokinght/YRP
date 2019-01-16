@@ -50,7 +50,6 @@ const moduleFileExtensions = [
   'jsx',
 ];
 
-// Resolve file paths in the same order as webpack
 const resolveModule = (resolveFn, filePath) => {
   const extension = moduleFileExtensions.find(extension =>
     fs.existsSync(resolveFn(`${filePath}.${extension}`))
@@ -63,7 +62,6 @@ const resolveModule = (resolveFn, filePath) => {
   return resolveFn(`${filePath}.js`);
 };
 
-// config after eject: we're in ./config/
 module.exports = {
   dotenv: resolveApp('.env'),
   appPath: resolveApp('.'),
@@ -71,8 +69,7 @@ module.exports = {
   appExtension: resolveApp('extension'),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
-  appTemplate: resolveApp('public/template.html'),
-  appIndexJs: resolveModule(resolveApp, 'src/index'),
+  appTemplate: resolveApp('config/template.html'),
   appOptionsJs: resolveModule(resolveApp, 'src/options/index'),
   appPopupJs: resolveModule(resolveApp, 'src/popup/index'),
   appSidebarJs: resolveModule(resolveApp, 'src/sidebar/index'),
