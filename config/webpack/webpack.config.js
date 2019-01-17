@@ -1,23 +1,12 @@
 const fs = require('fs');
 const path = require('path');
-const webpack = require('webpack');
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 // const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
-const TerserPlugin = require('terser-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const safePostCssParser = require('postcss-safe-parser');
-const ManifestPlugin = require('webpack-manifest-plugin');
-const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
-const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
-
-const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 
 const paths = require('../paths');
 const initLoaders = require('./loaders');
+const initPlugins = require('./plugins');
 const getClientEnvironment = require('../env');
 
 
@@ -44,7 +33,7 @@ module.exports = function (webpackEnv) {
   const env = getClientEnvironment(publicUrl);
 
   const loaders = initLoaders(isEnvProduction, isEnvDevelopment, shouldUseRelativeAssetPaths, shouldUseSourceMap);
-
+  const plugins = initPlugins(isEnvProduction, env, shouldUseSourceMap);
 
   return {
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
@@ -81,41 +70,8 @@ module.exports = function (webpackEnv) {
     optimization: {
       minimize: isEnvProduction,
       minimizer: [
-        new TerserPlugin({
-          terserOptions: {
-            parse: {
-              ecma: 8,
-            },
-            compress: {
-              ecma: 5,
-              warnings: false,
-              comparisons: false,
-              inline: 2,
-            },
-            mangle: {
-              safari10: true,
-            },
-            output: {
-              ecma: 5,
-              comments: false,
-              ascii_only: true,
-            },
-          },
-          parallel: true,
-          cache: true,
-          sourceMap: shouldUseSourceMap,
-        }),
-        new OptimizeCSSAssetsPlugin({
-          cssProcessorOptions: {
-            parser: safePostCssParser,
-            map: shouldUseSourceMap
-              ? {
-                inline: false,
-                annotation: true,
-              }
-              : false,
-          },
-        }),
+        plugins.terserPlugin,
+        plugins.optimizeCSSAssetsPlugin,
       ],
       splitChunks: {
         chunks: 'all',
@@ -146,16 +102,11 @@ module.exports = function (webpackEnv) {
         { parser: { requireEnsure: false } },
         loaders.eslintLoader,
         {
-          // "oneOf" will traverse all following loaders until one will
-          // match the requirements. When no loader matches it will fall
-          // back to the "file" loader at the end of the loader list.
+          // "oneOf" will traverse all following loaders until one will match the requirements. 
+          // When no loader matches it will fall back to the "file" loader at the end of the loader list.
           oneOf: [
             loaders.urlLoader,
-            // Process application JS with Babel.
-            // The preset includes JSX, Flow, TypeScript, and some ESnext features.
             loaders.insideBabelLoader,
-            // Process any JS outside of the app with Babel.
-            // Unlike the application JS, we only compile the standard ES features.
             loaders.outsideBabelLoader,
             loaders.styleLoader,
             loaders.cssModuleLoader,
@@ -167,107 +118,16 @@ module.exports = function (webpackEnv) {
       ],
     },
     plugins: [
-      new HtmlWebpackPlugin(
-        Object.assign(
-          {},
-          {
-            title: 'Options',
-            chunks: ['options'],
-            filename: 'options.html',
-            template: paths.appTemplate,
-          },
-          isEnvProduction
-            ? {
-              minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeRedundantAttributes: true,
-                useShortDoctype: true,
-                removeEmptyAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-                keepClosingSlash: true,
-                minifyJS: true,
-                minifyCSS: true,
-                minifyURLs: true,
-              },
-            }
-            : undefined
-        )
-      ),
-      new HtmlWebpackPlugin(
-        Object.assign(
-          {},
-          {
-            title: 'Popup',
-            chunks: ['popup'],
-            filename: 'popup.html',
-            template: paths.appTemplate,
-          },
-          isEnvProduction
-            ? {
-              minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeRedundantAttributes: true,
-                useShortDoctype: true,
-                removeEmptyAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-                keepClosingSlash: true,
-                minifyJS: true,
-                minifyCSS: true,
-                minifyURLs: true,
-              },
-            }
-            : undefined
-        )
-      ),
-      new HtmlWebpackPlugin(
-        Object.assign(
-          {},
-          {
-            title: 'Sidebar',
-            chunks: ['sidebar'],
-            filename: 'sidebar.html',
-            template: paths.appTemplate,
-          },
-          isEnvProduction
-            ? {
-              minify: {
-                removeComments: true,
-                collapseWhitespace: true,
-                removeRedundantAttributes: true,
-                useShortDoctype: true,
-                removeEmptyAttributes: true,
-                removeStyleLinkTypeAttributes: true,
-                keepClosingSlash: true,
-                minifyJS: true,
-                minifyCSS: true,
-                minifyURLs: true,
-              },
-            }
-            : undefined
-        )
-      ),
-      /* isEnvProduction &&
-      shouldInlineRuntimeChunk &&
-      new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/runtime~.+[.]js/]),*/
-      new InterpolateHtmlPlugin(HtmlWebpackPlugin, env.raw),
-      new ModuleNotFoundPlugin(paths.appPath),
-      new webpack.DefinePlugin(env.stringified),
-      isEnvDevelopment && new webpack.HotModuleReplacementPlugin(),
-      isEnvDevelopment && new CaseSensitivePathsPlugin(),
-      isEnvDevelopment &&
-      new WatchMissingNodeModulesPlugin(paths.appNodeModules),
-      isEnvProduction &&
-      new MiniCssExtractPlugin({
-        filename: '[name].css',
-        // chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
-      }),
-      new ManifestPlugin({
-        fileName: 'asset-manifest.json',
-        publicPath: publicPath,
-      }),
-      new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+      plugins.optionsHtmlPlugin,
+      plugins.popupHtmlPlugin,
+      plugins.sidebarHtmlPlugin,
+      plugins.interpolateHtmlPlugin,
+      plugins.webpackDefinePlugin,
+      isEnvDevelopment && plugins.hotModuleReplacementPlguin,
+      isEnvDevelopment && plugins.CaseSensitivePathsPlugin,
+      isEnvDevelopment && plugins.watchMissingNodeModulesPlugin,
+      isEnvProduction && plugins.miniCssExtractPlugin,
+      plugins.ignorePlugin,
     ].filter(Boolean),
     node: {
       dgram: 'empty',

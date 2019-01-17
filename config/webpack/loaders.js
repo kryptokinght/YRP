@@ -1,5 +1,6 @@
 const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
 // NOTE: Loader `include` paths are relative to this module
 const paths = require('../paths');
 
@@ -77,7 +78,8 @@ const getLoaders = (isEnvProduction, isEnvDevelopment, shouldUseRelativeAssetPat
       name: 'static/media/[name].[hash:8].[ext]',
     },
   };
-
+  // Process application JS with Babel.
+  // The preset includes JSX, Flow, TypeScript, and some ESnext features.
   const insideBabelLoader = {
     test: /\.(js|mjs|jsx|ts|tsx)$/,
     include: paths.appSrc,
@@ -104,7 +106,8 @@ const getLoaders = (isEnvProduction, isEnvDevelopment, shouldUseRelativeAssetPat
       compact: isEnvProduction,
     },
   };
-
+  // Process any JS outside of the app with Babel.
+  // Unlike the application JS, we only compile the standard ES features.
   const outsideBabelLoader = {
     test: /\.(js|mjs)$/,
     exclude: /@babel(?:\/|\\{1,2})runtime/,
@@ -124,7 +127,13 @@ const getLoaders = (isEnvProduction, isEnvDevelopment, shouldUseRelativeAssetPat
       sourceMaps: false,
     },
   };
-
+  // "postcss" loader applies autoprefixer to our CSS.
+  // "css" loader resolves paths in CSS and adds assets as dependencies.
+  // "style" loader turns CSS into JS modules that inject <style> tags.
+  // In production, we use MiniCSSExtractPlugin to extract that CSS
+  // to a file, but in development "style" loader enables hot editing
+  // of CSS.
+  // By default we support CSS Modules with the extension .module.css
   const styleLoader = {
     test: cssRegex,
     exclude: cssModuleRegex,
@@ -134,7 +143,8 @@ const getLoaders = (isEnvProduction, isEnvDevelopment, shouldUseRelativeAssetPat
     }),
     sideEffects: true,
   };
-
+  // Adds support for CSS Modules (https://github.com/css-modules/css-modules)
+  // using the extension .module.css
   const cssModuleLoader = {
     test: cssModuleRegex,
     use: getStyleLoaders({
