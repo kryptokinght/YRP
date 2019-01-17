@@ -13,10 +13,13 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
-const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
-const paths = require('../paths');
-const getClientEnvironment = require('../env');
+
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
+
+const paths = require('../paths');
+const initLoaders = require('./loaders');
+const getClientEnvironment = require('../env');
+
 
 
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
@@ -24,8 +27,7 @@ const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
 const useTypeScript = fs.existsSync(paths.appTsConfig);
 
-const cssRegex = /\.css$/;
-const cssModuleRegex = /\.module\.css$/;
+
 
 module.exports = function (webpackEnv) {
   const isEnvDevelopment = webpackEnv === 'development';
@@ -41,47 +43,8 @@ module.exports = function (webpackEnv) {
     : isEnvDevelopment && '';
   const env = getClientEnvironment(publicUrl);
 
-  const getStyleLoaders = (cssOptions, preProcessor) => {
-    const loaders = [
-      isEnvDevelopment && require.resolve('style-loader'),
-      isEnvProduction && {
-        loader: MiniCssExtractPlugin.loader,
-        options: Object.assign(
-          {},
-          shouldUseRelativeAssetPaths ? { publicPath: '../../' } : undefined
-        ),
-      },
-      {
-        loader: require.resolve('css-loader'),
-        options: cssOptions,
-      },
-      {
-        loader: require.resolve('postcss-loader'),
-        options: {
-          ident: 'postcss',
-          plugins: () => [
-            require('postcss-flexbugs-fixes'),
-            require('postcss-preset-env')({
-              autoprefixer: {
-                flexbox: 'no-2009',
-              },
-              stage: 3,
-            }),
-          ],
-          sourceMap: isEnvProduction && shouldUseSourceMap,
-        },
-      },
-    ].filter(Boolean);
-    if (preProcessor) {
-      loaders.push({
-        loader: require.resolve(preProcessor),
-        options: {
-          sourceMap: isEnvProduction && shouldUseSourceMap,
-        },
-      });
-    }
-    return loaders;
-  };
+  const loaders = initLoaders(isEnvProduction, isEnvDevelopment, shouldUseRelativeAssetPaths, shouldUseSourceMap);
+
 
   return {
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
@@ -181,101 +144,22 @@ module.exports = function (webpackEnv) {
       strictExportPresence: true,
       rules: [
         { parser: { requireEnsure: false } },
+        loaders.eslintLoader,
         {
-          test: /\.(js|mjs|jsx)$/,
-          enforce: 'pre',
-          use: [
-            {
-              options: {
-                formatter: require.resolve('react-dev-utils/eslintFormatter'),
-                eslintPath: require.resolve('eslint'),
-
-              },
-              loader: require.resolve('eslint-loader'),
-            },
-          ],
-          include: paths.appSrc,
-        },
-        {
+          // "oneOf" will traverse all following loaders until one will
+          // match the requirements. When no loader matches it will fall
+          // back to the "file" loader at the end of the loader list.
           oneOf: [
-            {
-              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
-              loader: require.resolve('url-loader'),
-              options: {
-                limit: 10000,
-                name: 'static/media/[name].[hash:8].[ext]',
-              },
-            },
-            {
-              test: /\.(js|mjs|jsx|ts|tsx)$/,
-              include: paths.appSrc,
-              loader: require.resolve('babel-loader'),
-              options: {
-                customize: require.resolve(
-                  'babel-preset-react-app/webpack-overrides'
-                ),
-
-                plugins: [
-                  [
-                    require.resolve('babel-plugin-named-asset-import'),
-                    {
-                      loaderMap: {
-                        svg: {
-                          ReactComponent:
-                            '@svgr/webpack?-prettier,-svgo![path]',
-                        },
-                      },
-                    },
-                  ],
-                ],
-                cacheCompression: isEnvProduction,
-                compact: isEnvProduction,
-              },
-            },
-            {
-              test: /\.(js|mjs)$/,
-              exclude: /@babel(?:\/|\\{1,2})runtime/,
-              loader: require.resolve('babel-loader'),
-              options: {
-                babelrc: false,
-                configFile: false,
-                compact: false,
-                presets: [
-                  [
-                    require.resolve('babel-preset-react-app/dependencies'),
-                    { helpers: true },
-                  ],
-                ],
-                cacheDirectory: true,
-                cacheCompression: isEnvProduction,
-                sourceMaps: false,
-              },
-            },
-            {
-              test: cssRegex,
-              exclude: cssModuleRegex,
-              use: getStyleLoaders({
-                importLoaders: 1,
-                sourceMap: isEnvProduction && shouldUseSourceMap,
-              }),
-              sideEffects: true,
-            },
-            {
-              test: cssModuleRegex,
-              use: getStyleLoaders({
-                importLoaders: 1,
-                sourceMap: isEnvProduction && shouldUseSourceMap,
-                modules: true,
-                getLocalIdent: getCSSModuleLocalIdent,
-              }),
-            },
-            {
-              loader: require.resolve('file-loader'),
-              exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
-              options: {
-                name: 'static/media/[name].[hash:8].[ext]',
-              },
-            },
+            loaders.urlLoader,
+            // Process application JS with Babel.
+            // The preset includes JSX, Flow, TypeScript, and some ESnext features.
+            loaders.insideBabelLoader,
+            // Process any JS outside of the app with Babel.
+            // Unlike the application JS, we only compile the standard ES features.
+            loaders.outsideBabelLoader,
+            loaders.styleLoader,
+            loaders.cssModuleLoader,
+            loaders.fileLoader
             // ** STOP ** Are you adding a new loader?
             // Make sure to add the new loader(s) before the "file" loader.
           ],

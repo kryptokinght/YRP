@@ -1,140 +1,169 @@
+const getCSSModuleLocalIdent = require('react-dev-utils/getCSSModuleLocalIdent');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // NOTE: Loader `include` paths are relative to this module
-const path = require('path');
 const paths = require('../paths');
-import CssExtractPlugin from 'mini-css-extract-plugin';
 
-export const threadLoader = {
-  loader: 'thread-loader',
-  options: {
-    poolTimeout: Infinity, // Threads won't timeout/need to be restarted on inc. builds
-    workers: require('os').cpus().length - 1,
-  },
-};
+const cssRegex = /\.css$/;
+const cssModuleRegex = /\.module\.css$/;
 
-export const eslintlod = {
-  test: /\.(js|mjs|jsx)$/,
-  enforce: 'pre',
-  use: [
-    {
-      options: {
-        formatter: require.resolve('react-dev-utils/eslintFormatter'),
-        eslintPath: require.resolve('eslint'),
 
+
+
+const getLoaders = (isEnvProduction, isEnvDevelopment, shouldUseRelativeAssetPaths, shouldUseSourceMap) => {
+
+  const getStyleLoaders = (cssOptions, preProcessor) => {
+    const styleLoaders = [
+      isEnvDevelopment && require.resolve('style-loader'),
+      isEnvProduction && {
+        loader: MiniCssExtractPlugin.loader,
+        options: Object.assign(
+          {},
+          shouldUseRelativeAssetPaths ? { publicPath: '../../' } : undefined
+        ),
       },
-      loader: require.resolve('eslint-loader'),
+      {
+        loader: require.resolve('css-loader'),
+        options: cssOptions,
+      },
+      {
+        loader: require.resolve('postcss-loader'),
+        options: {
+          ident: 'postcss',
+          plugins: () => [
+            require('postcss-flexbugs-fixes'),
+            require('postcss-preset-env')({
+              autoprefixer: {
+                flexbox: 'no-2009',
+              },
+              stage: 3,
+            }),
+          ],
+          sourceMap: isEnvProduction && shouldUseSourceMap,
+        },
+      },
+    ].filter(Boolean);
+    if (preProcessor) {
+      styleLoaders.push({
+        loader: require.resolve(preProcessor),
+        options: {
+          sourceMap: isEnvProduction && shouldUseSourceMap,
+        },
+      });
+    }
+    return styleLoaders;
+  };
+
+  const eslintLoader = {
+    test: /\.(js|mjs|jsx)$/,
+    enforce: 'pre',
+    use: [
+      {
+        options: {
+          formatter: require.resolve('react-dev-utils/eslintFormatter'),
+          eslintPath: require.resolve('eslint'),
+
+        },
+        loader: require.resolve('eslint-loader'),
+      },
+    ],
+    include: paths.appSrc,
+  };
+
+  const urlLoader = {
+    test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+    loader: require.resolve('url-loader'),
+    options: {
+      limit: 10000,
+      name: 'static/media/[name].[hash:8].[ext]',
     },
-  ],
-  include: paths.appSrc,
-};
-
-export const eslintLoader = {
-  loader: 'eslint-loader',
-  options: {
-    cache: true,
-  },
-};
-
-export const babelLoader = {
-  loader: 'babel-loader',
-};
-
-export const tsLoader = {
-  loader: 'ts-loader',
-  options: {
-    happyPackMode: true,
-  },
-};
-
-export const coffeescriptLoader = {
-  loader: 'coffeescript-loader',
-};
-
-export const injectStylesLoader = {
-  loader: 'style-loader',
-};
-
-export const extractStylesLoader = {
-  loader: CssExtractPlugin.loader,
-};
-
-export const cssModulesLoader = {
-  loader: 'css-loader',
-  options: {
-    modules: true,
-    importLoaders: 1,
-  },
-};
-
-export const cssVanillaLoader = {
-  loader: 'css-loader',
-};
-
-export const postcssLoader = {
-  loader: 'postcss-loader',
-};
-
-export const urlLoader = {
-  loader: 'url-loader',
-  options: {
-    limit: 8192,
-  },
-};
-
-export const svgLoader = {
-  test: /\.svg$/,
-  include: /node_modules/, // Only resolve SVG imports from node_modules (imported CSS) - for now
-  loader: 'svg-inline-loader',
-};
-
-export default ({ mode, context, isCI = false, injectStyles = false }) => {
-  // style-loader's general method of inserting <style> tags into the `document` doesn't
-  //  seem to play nicely with the content_script. It would be nice to find a work-around
-  //  later as style-loader is nicer for dev.
-  const styleLoader = injectStyles ? injectStylesLoader : extractStylesLoader;
-
-  const main = {
-    test: /\.(j|t)sx?$/,
-    include: path.resolve(context, './src'),
-    use: [babelLoader, tsLoader],
   };
 
-  const coffee = {
-    test: /\.coffee?$/,
-    include: path.resolve(context, './src/direct-linking'),
-    use: [babelLoader, coffeescriptLoader],
+  const insideBabelLoader = {
+    test: /\.(js|mjs|jsx|ts|tsx)$/,
+    include: paths.appSrc,
+    loader: require.resolve('babel-loader'),
+    options: {
+      customize: require.resolve(
+        'babel-preset-react-app/webpack-overrides'
+      ),
+
+      plugins: [
+        [
+          require.resolve('babel-plugin-named-asset-import'),
+          {
+            loaderMap: {
+              svg: {
+                ReactComponent:
+                  '@svgr/webpack?-prettier,-svgo![path]',
+              },
+            },
+          },
+        ],
+      ],
+      cacheCompression: isEnvProduction,
+      compact: isEnvProduction,
+    },
   };
 
-  const cssModules = {
-    test: /\.css$/,
-    include: path.resolve(context, './src'),
-    use: [styleLoader, cssModulesLoader, postcssLoader],
+  const outsideBabelLoader = {
+    test: /\.(js|mjs)$/,
+    exclude: /@babel(?:\/|\\{1,2})runtime/,
+    loader: require.resolve('babel-loader'),
+    options: {
+      babelrc: false,
+      configFile: false,
+      compact: false,
+      presets: [
+        [
+          require.resolve('babel-preset-react-app/dependencies'),
+          { helpers: true },
+        ],
+      ],
+      cacheDirectory: true,
+      cacheCompression: isEnvProduction,
+      sourceMaps: false,
+    },
   };
 
-  const cssVanilla = {
-    test: /\.css$/,
-    include: path.resolve(context, './node_modules'),
-    use: [styleLoader, cssVanillaLoader],
+  const styleLoader = {
+    test: cssRegex,
+    exclude: cssModuleRegex,
+    use: getStyleLoaders({
+      importLoaders: 1,
+      sourceMap: isEnvProduction && shouldUseSourceMap,
+    }),
+    sideEffects: true,
   };
 
-  const lint = {
-    test: /\.jsx?$/,
-    include: path.resolve(context, './src'),
-    use: [eslintLoader],
+  const cssModuleLoader = {
+    test: cssModuleRegex,
+    use: getStyleLoaders({
+      importLoaders: 1,
+      sourceMap: isEnvProduction && shouldUseSourceMap,
+      modules: true,
+      getLocalIdent: getCSSModuleLocalIdent,
+    }),
   };
 
-  const imgLoader = {
-    test: /\.(png|jpg|gif|svg)$/,
-    include: path.resolve(context, './img'),
-    use: [urlLoader],
+  const fileLoader = {
+    loader: require.resolve('file-loader'),
+    exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
+    options: {
+      name: 'static/media/[name].[hash:8].[ext]',
+    },
   };
 
-  if (isCI) {
-    return [main, coffee, imgLoader, cssModules, cssVanilla];
-  }
-
-  if (mode !== 'production') {
-    main.use = [threadLoader, ...main.use];
-  }
-
-  return [main, coffee, imgLoader, lint, cssModules, cssVanilla];
+  return {
+    eslintLoader,
+    urlLoader,
+    insideBabelLoader,
+    outsideBabelLoader,
+    styleLoader,
+    cssModuleLoader,
+    fileLoader
+  };
 };
+
+module.exports = getLoaders;
+
+
