@@ -1,19 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const PnpWebpackPlugin = require('pnp-webpack-plugin');
-// const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
-const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 
 const paths = require('../paths');
 const initLoaders = require('./loaders');
 const initPlugins = require('./plugins');
 const getClientEnvironment = require('../env');
 
-
-
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
-// const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
-
 const useTypeScript = fs.existsSync(paths.appTsConfig);
 
 
@@ -39,31 +33,22 @@ module.exports = function (webpackEnv) {
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
     bail: isEnvProduction, // stop compilation on the very first error itself
     devtool: isEnvProduction
-      ? shouldUseSourceMap
-        ? 'source-map'
-        : false
+      ? shouldUseSourceMap ? 'source-map' : false
       : isEnvDevelopment && 'cheap-module-source-map',
     entry: {
-      // isEnvDevelopment && require.resolve('react-dev-utils/webpackHotDevClient'),
       'popup': paths.appPopupJs,
       'sidebar': paths.appSidebarJs,
       'options': paths.appOptionsJs,
       // background: paths.appBackgroundJs,
-    }, // .filter(Boolean),
+    },
     output: {
       path: isEnvProduction ? paths.appExtension : undefined,
       pathinfo: isEnvDevelopment,
       filename: '[name].js',
-      /* chunkFilename: isEnvProduction
-        ? 'static/js/[name].[chunkhash:8].chunk.js'
-        : isEnvDevelopment && 'static/js/[name].chunk.js', */
-      // We inferred the "public path" (such as / or /my-project) from homepage.
-      // We use "/" in development.
       devtoolModuleFilenameTemplate: isEnvProduction
-        ? info =>
-          path
-            .relative(paths.appSrc, info.absoluteResourcePath)
-            .replace(/\\/g, '/')
+        ? info => path
+          .relative(paths.appSrc, info.absoluteResourcePath)
+          .replace(/\\/g, '/')
         : isEnvDevelopment &&
         (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/')),
     },
@@ -76,8 +61,7 @@ module.exports = function (webpackEnv) {
       splitChunks: {
         chunks: 'all',
         name: false,
-      },
-      // runtimeChunk: true,
+      }
     },
     resolve: {
       modules: ['node_modules'].concat(
@@ -88,7 +72,7 @@ module.exports = function (webpackEnv) {
         .filter(ext => useTypeScript || !ext.includes('ts')),
       plugins: [
         PnpWebpackPlugin,
-        new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]),
+        plugins.moduleScopePlugin,
       ],
     },
     resolveLoader: {

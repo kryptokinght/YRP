@@ -8,6 +8,7 @@ const safePostCssParser = require('postcss-safe-parser');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
+const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 
 // NOTE: Loader `include` paths are relative to this module
 const paths = require('../paths');
@@ -126,6 +127,8 @@ const getPlugins = (isEnvProduction, env, shouldUseSourceMap) => {
     },
   });
 
+  const moduleScopePlugin = new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]);
+
   return {
     optionsHtmlPlugin,
     popupHtmlPlugin,
@@ -139,7 +142,8 @@ const getPlugins = (isEnvProduction, env, shouldUseSourceMap) => {
     miniCssExtractPlugin,
     ignorePlugin,
     terserPlugin,
-    optimizeCSSAssetsPlugin
+    optimizeCSSAssetsPlugin,
+    moduleScopePlugin
   };
 };
 
