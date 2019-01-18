@@ -11,9 +11,7 @@
     "compress-keygen": "crx keygen",
     "clean": "rimraf build/ dev/ dist/  *.zip *.crx",
     "lint": "eslint ./ ",
-    "lint:fix": "eslint ./ --fix",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "lint:fix": "eslint ./ --fix"
   },
   "husky": {
     "hooks": {
@@ -50,11 +48,7 @@
     "prop-types": "^15.6.2",
     "react-dev-utils": "^7.0.1",
     "style-loader": "^0.23.1",
-    "webpack-cli": "^3.2.1",
-    "@storybook/react": "^4.1.7",
-    "@storybook/addon-actions": "^4.1.7",
-    "@storybook/addon-links": "^4.1.7",
-    "@storybook/addons": "^4.1.7"
+    "webpack-cli": "^3.2.1"
   },
   "dependencies": {
     "@babel/core": "7.1.6",
