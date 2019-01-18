@@ -27,7 +27,7 @@ const minifyHtml = {
 };
 
 
-const getPlugins = (isEnvProduction, env, shouldUseSourceMap) => {
+const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) => {
 
   const optionsHtmlPlugin = new HtmlWebpackPlugin(
     Object.assign(
