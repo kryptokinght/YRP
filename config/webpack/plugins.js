@@ -9,9 +9,11 @@ const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 // NOTE: Loader `include` paths are relative to this module
 const paths = require('../paths');
+const staticFiles = require('./static-files');
 
 const minifyHtml = {
   removeComments: true,
@@ -128,6 +130,7 @@ const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) =>
   });
 
   const moduleScopePlugin = new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]);
+  const copyPlugin = new CopyPlugin(staticFiles.copyPatterns);
 
   return {
     optionsHtmlPlugin,
@@ -143,7 +146,8 @@ const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) =>
     ignorePlugin,
     terserPlugin,
     optimizeCSSAssetsPlugin,
-    moduleScopePlugin
+    moduleScopePlugin,
+    copyPlugin
   };
 };
 

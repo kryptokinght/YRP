@@ -102,6 +102,7 @@ module.exports = function (webpackEnv) {
       ],
     },
     plugins: [
+      plugins.copyPlugin,
       plugins.optionsHtmlPlugin,
       plugins.popupHtmlPlugin,
       plugins.sidebarHtmlPlugin,
