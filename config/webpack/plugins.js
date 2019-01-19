@@ -10,8 +10,8 @@ const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeM
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
 
-// NOTE: Loader `include` paths are relative to this module
 const paths = require('../paths');
 const staticFiles = require('./static-files');
 
@@ -30,7 +30,7 @@ const minifyHtml = {
 
 
 const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) => {
-
+  /* HTML Plugins for options, sidebar, options */
   const optionsHtmlPlugin = new HtmlWebpackPlugin(
     Object.assign(
       {},
@@ -92,6 +92,10 @@ const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) =>
     filename: '[name].css',
     // chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
   });
+  const manifestPlugin = new ManifestPlugin({
+    fileName: 'asset-manifest.json',
+    publicPath: '/',
+  });
   const ignorePlugin = new IgnorePlugin(/^\.\/locale$/, /moment$/);
   const terserPlugin = new TerserPlugin({
     terserOptions: {
@@ -147,7 +151,8 @@ const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) =>
     terserPlugin,
     optimizeCSSAssetsPlugin,
     moduleScopePlugin,
-    copyPlugin
+    copyPlugin,
+    manifestPlugin
   };
 };
 

@@ -5,7 +5,6 @@ function transformManifestVersion(content) {
   return Buffer.from(JSON.stringify(manifest));
 }
 
-
 const copyPatterns = [
   {
     from: 'src/manifest.json',
@@ -30,6 +29,15 @@ const copyPatterns = [
   }, */
 ];
 
+const htmlAssets = [
+  'fonts/material-icons/material-icons.css',
+  'fonts/googlefonts/lato.css',
+  'fonts/googlefonts/open-sans.css',
+  'fonts/googlefonts/libre-franklin.css',
+  'lib/browser-polyfill.js',
+];
+
 module.exports = {
-  copyPatterns
+  copyPatterns,
+  htmlAssets
 };

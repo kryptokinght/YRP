@@ -10,7 +10,7 @@ const cssModuleRegex = /\.module\.css$/;
 
 
 
-const getLoaders = (isEnvDevelopment = true, isEnvProduction = false, shouldUseRelativeAssetPaths = true, shouldUseSourceMap = false) => {
+const getLoaders = (isEnvProduction = false, isEnvDevelopment = true, shouldUseRelativeAssetPaths = true, shouldUseSourceMap = false) => {
 
   const getStyleLoaders = (cssOptions, preProcessor) => {
     const styleLoaders = [
