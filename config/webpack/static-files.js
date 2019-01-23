@@ -12,10 +12,10 @@ const copyPatterns = [
     transform: transformManifestVersion,
   },
   { from: 'img', to: 'img' },
-  /* {
+  {
     from: 'node_modules/webextension-polyfill/dist/browser-polyfill.js',
     to: 'lib/',
-  }, */
+  },
   // { from: 'node_modules/pdfjs-dist/build/pdf.worker.min.js', to: 'lib/' },
   // {
   //  from: 'fonts/*/*',
@@ -30,10 +30,10 @@ const copyPatterns = [
 ];
 
 const htmlAssets = [
-  'fonts/material-icons/material-icons.css',
+  /* 'fonts/material-icons/material-icons.css',
   'fonts/googlefonts/lato.css',
   'fonts/googlefonts/open-sans.css',
-  'fonts/googlefonts/libre-franklin.css',
+  'fonts/googlefonts/libre-franklin.css', */
   'lib/browser-polyfill.js',
 ];
 

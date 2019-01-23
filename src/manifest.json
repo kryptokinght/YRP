@@ -9,16 +9,17 @@
   "content_scripts": [
     {
       "matches": [
-        "http://www.youtube.com/*",
-        "https://www.youtube.com/*"
+        "<all_urls>"
       ],
       "js": [
+        "lib/browser-polyfill.js",
         "content.js"
       ]
     }
   ],
   "background": {
     "scripts": [
+      "lib/browser-polyfill.js",
       "background.js"
     ]
   },

@@ -4,6 +4,7 @@ const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const HtmlIncAssetsPlugin = require('html-webpack-include-assets-plugin');
 const safePostCssParser = require('postcss-safe-parser');
 const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
@@ -133,6 +134,11 @@ const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) =>
     },
   });
 
+  const htmlIncAssetsPlugin = new HtmlIncAssetsPlugin({
+    append: false,
+    assets: staticFiles.htmlAssets,
+  });
+
   const moduleScopePlugin = new ModuleScopePlugin(paths.appSrc, [paths.appPackageJson]);
   const copyPlugin = new CopyPlugin(staticFiles.copyPatterns);
 
@@ -152,7 +158,8 @@ const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) =>
     optimizeCSSAssetsPlugin,
     moduleScopePlugin,
     copyPlugin,
-    manifestPlugin
+    manifestPlugin,
+    htmlIncAssetsPlugin
   };
 };
 

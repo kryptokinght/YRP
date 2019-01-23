@@ -107,6 +107,7 @@ module.exports = function (webpackEnv) {
       plugins.popupHtmlPlugin,
       plugins.sidebarHtmlPlugin,
       plugins.interpolateHtmlPlugin,
+      plugins.htmlIncAssetsPlugin,
       plugins.moduleNotFoundPlugin,
       plugins.webpackDefinePlugin,
       isEnvDevelopment && plugins.hotModuleReplacementPlguin,

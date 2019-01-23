@@ -3,7 +3,7 @@
 const chromeLaunch = require('chrome-launch'); // eslint-disable-line import/no-extraneous-dependencies
 const path = require('path');
 
-const url = 'https://youtube.com';
+const url = 'https://google.com';
 const dist = path.resolve(__dirname, '..', 'dist');
 const args = [`--load-extension=${dist}`];
 
