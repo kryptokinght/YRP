@@ -5,7 +5,9 @@
   "main": "background.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node scripts/start.js",
+    "start:chrome": "npm run chrome-launch",
+    "start:firefox": "npm run firefox-launch",
+    "start:views": "node scripts/start.js",
     "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
     "compress": "node scripts/compress",
@@ -15,7 +17,6 @@
     "lint:fix": "eslint ./ --fix",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "tx": "npm run clean && npm run dev & node scripts/chrome-launch.js",
     "chrome-launch": "concurrently --kill-others \"npm run dev\" \"node scripts/chrome-launch.js\" ",
     "firefox-launch": "concurrently --kill-others \"npm run dev\" \"web-ext run --source-dir dev --pref startup.homepage_welcome_url=https://www.youtube.com\" "
   },
