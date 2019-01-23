@@ -1,4 +1,4 @@
-const { DefinePlugin, HotModuleReplacementPlugin, IgnorePlugin } = require('webpack');
+const { DefinePlugin, IgnorePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -11,7 +11,6 @@ const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeM
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
 
 const paths = require('../paths');
 const staticFiles = require('./static-files');
@@ -86,16 +85,11 @@ const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) =>
   const interpolateHtmlPlugin = new InterpolateHtmlPlugin(HtmlWebpackPlugin, env.raw);
   const moduleNotFoundPlugin = new ModuleNotFoundPlugin(paths.appPath);
   const webpackDefinePlugin = new DefinePlugin(env.stringified);
-  const hotModuleReplacementPlguin = new HotModuleReplacementPlugin();
   const caseSensitivePathsPlugin = new CaseSensitivePathsPlugin();
   const watchMissingNodeModulesPlugin = new WatchMissingNodeModulesPlugin(paths.appNodeModules);
   const miniCssExtractPlugin = new MiniCssExtractPlugin({
     filename: '[name].css',
     // chunkFilename: 'static/css/[name].[contenthash:8].chunk.css',
-  });
-  const manifestPlugin = new ManifestPlugin({
-    fileName: 'asset-manifest.json',
-    publicPath: '/',
   });
   const ignorePlugin = new IgnorePlugin(/^\.\/locale$/, /moment$/);
   const terserPlugin = new TerserPlugin({
@@ -149,7 +143,6 @@ const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) =>
     interpolateHtmlPlugin,
     moduleNotFoundPlugin,
     webpackDefinePlugin,
-    hotModuleReplacementPlguin,
     caseSensitivePathsPlugin,
     watchMissingNodeModulesPlugin,
     miniCssExtractPlugin,
@@ -158,7 +151,6 @@ const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) =>
     optimizeCSSAssetsPlugin,
     moduleScopePlugin,
     copyPlugin,
-    manifestPlugin,
     htmlIncAssetsPlugin
   };
 };

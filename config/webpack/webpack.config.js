@@ -44,7 +44,7 @@ module.exports = function (webpackEnv) {
     },
     output: {
       path: isEnvProduction ? paths.appExtension : paths.appDev,
-      pathinfo: isEnvDevelopment,
+      // pathinfo: isEnvDevelopment,
       filename: '[name].js',
       devtoolModuleFilenameTemplate: isEnvProduction
         ? info => path
@@ -110,11 +110,9 @@ module.exports = function (webpackEnv) {
       plugins.htmlIncAssetsPlugin,
       plugins.moduleNotFoundPlugin,
       plugins.webpackDefinePlugin,
-      isEnvDevelopment && plugins.hotModuleReplacementPlguin,
       isEnvDevelopment && plugins.CaseSensitivePathsPlugin,
       isEnvDevelopment && plugins.watchMissingNodeModulesPlugin,
       isEnvProduction && plugins.miniCssExtractPlugin,
-      plugins.manifestPlugin,
       plugins.ignorePlugin,
       plugins.copyPlugin,
     ].filter(Boolean),

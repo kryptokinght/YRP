@@ -15,7 +15,8 @@
     "lint:fix": "eslint ./ --fix",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "chrome-launch": " concurrently --kill-others \"npm run dev\" \"node scripts/chrome-launch.js\" ",
+    "tx": "npm run clean && npm run dev & node scripts/chrome-launch.js",
+    "chrome-launch": "concurrently --kill-others \"npm run dev\" \"node scripts/chrome-launch.js\" ",
     "firefox-launch": "concurrently --kill-others \"npm run dev\" \"web-ext run --source-dir dev --pref startup.homepage_welcome_url=https://www.youtube.com\" "
   },
   "husky": {
