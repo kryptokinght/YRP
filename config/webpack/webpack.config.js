@@ -43,7 +43,7 @@ module.exports = function (webpackEnv) {
       'content': paths.appContentJs,
     },
     output: {
-      path: isEnvProduction ? paths.appExtension : undefined,
+      path: isEnvProduction ? paths.appExtension : paths.appDev,
       pathinfo: isEnvDevelopment,
       filename: '[name].js',
       devtoolModuleFilenameTemplate: isEnvProduction

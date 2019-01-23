@@ -67,6 +67,7 @@ module.exports = {
   appPath: resolveApp('.'),
   appBuild: resolveApp('build'),
   appExtension: resolveApp('extension'),
+  appDev: resolveApp('dev'),
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
   appTemplate: resolveApp('config/template.html'),

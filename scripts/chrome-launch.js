@@ -4,8 +4,8 @@ const chromeLaunch = require('chrome-launch'); // eslint-disable-line import/no-
 const path = require('path');
 
 const url = 'https://google.com';
-const dist = path.resolve(__dirname, '..', 'dist');
-const args = [`--load-extension=${dist}`];
+const dev = path.resolve(__dirname, '..', 'dev');
+const args = [`--load-extension=${dev}`];
 
 chromeLaunch(url, { args });
 console.log('A new instance of Chrome should now be open in the background.'); // eslint-disable-line no-console

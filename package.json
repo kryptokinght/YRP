@@ -16,7 +16,7 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "chrome-launch": " concurrently --kill-others \"npm run dev\" \"node scripts/chrome-launch.js\" ",
-    "firefox-launch": "concurrently --kill-others \"npm run dev\" \"web-ext run --source-dir dist --pref startup.homepage_welcome_url=https://www.youtube.com\" "
+    "firefox-launch": "concurrently --kill-others \"npm run dev\" \"web-ext run --source-dir dev --pref startup.homepage_welcome_url=https://www.youtube.com\" "
   },
   "husky": {
     "hooks": {
