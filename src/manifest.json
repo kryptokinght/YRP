@@ -32,6 +32,10 @@
   },
   "web_accessible_resources": [
     "musicPlayer.html",
-    "setTimeForm.html"
-  ]
+    "sidebar.html"
+  ],
+  "options_ui": {
+    "page": "./options.html",
+    "open_in_tab": true
+  }
 }

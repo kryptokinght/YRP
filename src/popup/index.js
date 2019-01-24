@@ -6,5 +6,5 @@ import Popup from './Popup';
 
 browser.runtime.sendMessage({ data: 'hello' });
 
-ReactDOM.render(<Popup text="Mah Amigos" />, document.getElementById('root'));
+ReactDOM.render(<Popup text="Ext boilerplate" />, document.getElementById('root'));
 

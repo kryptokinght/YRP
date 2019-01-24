@@ -5,7 +5,7 @@ const PnpWebpackPlugin = require('pnp-webpack-plugin');
 const paths = require('../paths');
 const initLoaders = require('./loaders');
 const initPlugins = require('./plugins');
-const getClientEnvironment = require('../env');
+require('../env');
 
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 const useTypeScript = fs.existsSync(paths.appTsConfig);
@@ -21,13 +21,8 @@ module.exports = function (webpackEnv) {
     : isEnvDevelopment && '/';
   const shouldUseRelativeAssetPaths = publicPath === './';
 
-  const publicUrl = isEnvProduction
-    ? publicPath.slice(0, -1)
-    : isEnvDevelopment && '';
-  const env = getClientEnvironment(publicUrl);
-
   const loaders = initLoaders(isEnvProduction, isEnvDevelopment, shouldUseRelativeAssetPaths, shouldUseSourceMap);
-  const plugins = initPlugins(isEnvProduction, env, shouldUseSourceMap);
+  const plugins = initPlugins(isEnvProduction, shouldUseSourceMap);
 
   return {
     mode: isEnvProduction ? 'production' : isEnvDevelopment && 'development',
@@ -106,10 +101,8 @@ module.exports = function (webpackEnv) {
       plugins.optionsHtmlPlugin,
       plugins.popupHtmlPlugin,
       plugins.sidebarHtmlPlugin,
-      plugins.interpolateHtmlPlugin,
       plugins.htmlIncAssetsPlugin,
       plugins.moduleNotFoundPlugin,
-      plugins.webpackDefinePlugin,
       isEnvDevelopment && plugins.CaseSensitivePathsPlugin,
       isEnvDevelopment && plugins.watchMissingNodeModulesPlugin,
       isEnvProduction && plugins.miniCssExtractPlugin,

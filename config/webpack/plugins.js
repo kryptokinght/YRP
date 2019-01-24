@@ -1,4 +1,4 @@
-const { DefinePlugin, IgnorePlugin } = require('webpack');
+const { IgnorePlugin } = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -6,7 +6,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const HtmlIncAssetsPlugin = require('html-webpack-include-assets-plugin');
 const safePostCssParser = require('postcss-safe-parser');
-const InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
 const WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
@@ -29,7 +28,7 @@ const minifyHtml = {
 };
 
 
-const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) => {
+const getPlugins = (isEnvProduction = false, shouldUseSourceMap = false) => {
   /* HTML Plugins for options, sidebar, options */
   const optionsHtmlPlugin = new HtmlWebpackPlugin(
     Object.assign(
@@ -82,9 +81,7 @@ const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) =>
     )
   );
 
-  const interpolateHtmlPlugin = new InterpolateHtmlPlugin(HtmlWebpackPlugin, env.raw);
   const moduleNotFoundPlugin = new ModuleNotFoundPlugin(paths.appPath);
-  const webpackDefinePlugin = new DefinePlugin(env.stringified);
   const caseSensitivePathsPlugin = new CaseSensitivePathsPlugin();
   const watchMissingNodeModulesPlugin = new WatchMissingNodeModulesPlugin(paths.appNodeModules);
   const miniCssExtractPlugin = new MiniCssExtractPlugin({
@@ -140,9 +137,7 @@ const getPlugins = (isEnvProduction = false, env, shouldUseSourceMap = false) =>
     optionsHtmlPlugin,
     popupHtmlPlugin,
     sidebarHtmlPlugin,
-    interpolateHtmlPlugin,
     moduleNotFoundPlugin,
-    webpackDefinePlugin,
     caseSensitivePathsPlugin,
     watchMissingNodeModulesPlugin,
     miniCssExtractPlugin,
