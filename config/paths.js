@@ -2,10 +2,12 @@ const path = require('path');
 const fs = require('fs');
 const url = require('url');
 
+require('colors');
+
 const appDirectory = fs.realpathSync(process.cwd());
-console.log('appDirectory: ', appDirectory);
+console.log(`appDirectory: ${appDirectory}`.yellow);
 const resolveApp = relativePath => path.resolve(appDirectory, relativePath);
-console.log(resolveApp('.env'));
+console.log(resolveApp('.env').yellow);
 
 const envPublicUrl = process.env.PUBLIC_URL;
 
@@ -71,6 +73,9 @@ module.exports = {
   appPublic: resolveApp('public'),
   appHtml: resolveApp('public/index.html'),
   appTemplate: resolveApp('config/template.html'),
+  optionsTemplate: resolveApp('src/options/template.html'),
+  sidebarTemplate: resolveApp('src/sidebar/template.html'),
+  popupTemplate: resolveApp('src/popup/template.html'),
   appOptionsJs: resolveModule(resolveApp, 'src/options/index'),
   appPopupJs: resolveModule(resolveApp, 'src/popup/index'),
   appSidebarJs: resolveModule(resolveApp, 'src/sidebar/index'),
